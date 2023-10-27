@@ -42,6 +42,11 @@ public:
     return this->compute(x);
   }
 
+  ScalarType operator()(ScalarType x_val, ScalarType y_val) const {
+    xt::xarray<ScalarType> input = {x_val, y_val};
+    return this->operator()(input);
+  }
+
   virtual std::optional<xt::xarray<ScalarType>>
   gradient(const xt::xarray<ScalarType> &x) const {
     ++m_counter.gradient_evals;
