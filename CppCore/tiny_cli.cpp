@@ -15,21 +15,22 @@
 
 #include "xtsci/func/plot_aid.hpp"
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
+#include "xtsci/func/trial/D2/himmelblau.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
   static_cast<void>(argc);
   static_cast<void>(argv);
   xts::func::trial::D2::Rosenbrock<double> rosen;
-  // xts::optimize::trial_functions::Himmelblau<double> himmelblau;
+  xts::func::trial::D2::Himmelblau<double> himmelblau;
   // xts::optimize::trial_functions::QuadraticFunction<double> quadratic;
   // xts::optimize::trial_functions::Eggholder<double> eggholder;
   // xts::optimize::trial_functions::MullerBrown<double> mullerbrown;
 
   // clang-format off
   // Rosenbrock
-  xt::xarray<double> min1 = xt::row(rosen.minima, 0); // {0, 0}
-  fmt::print("Rosenbrock Minima: {} with fval {}\n", min1, rosen(min1));
+  // xt::xarray<double> min1 = xt::row(rosen.minima, 0); // {0, 0}
+  // fmt::print("Rosenbrock Minima: {} with fval {}\n", min1, rosen(min1));
   // clang-format on
 
   // Grid test
@@ -37,9 +38,6 @@ int main(int argc, char *argv[]) {
   // ,rosen); for (auto i : z_mesh) {
   //   fmt::print("{} ", i);
   // }
-
-  // npz test
-  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen, "rosen.npz");
 
   // clang-format off
   // Muller Brown
@@ -59,8 +57,14 @@ int main(int argc, char *argv[]) {
   // xt::row(himmelblau.minima, 2); // {-3.779310, -3.283186};
   // xt::xarray<double> min4 =
   // xt::row(himmelblau.minima, 3); // {3.584428, -1.848126};
-  // fmt::print("Minima: {}, {}, {}, {}\n", min1, min2, min3, min4);
+  // fmt::print("Himmelblau Minima:\n{}, {}\n{}, {}\n{}, {}\n{}, {}\n", min1,
+  //            himmelblau(min1), min2, himmelblau(min2), min3, himmelblau(min3),
+  //            min4, himmelblau(min4));
   // clang-format on
+
+  // npz test
+  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen, "rosen.npz");
+  xts::func::npz_on_grid2D<double>({-5, 5, 400}, {-5, 5, 400}, himmelblau, "himmelblau.npz");
 
   return EXIT_SUCCESS;
 }
