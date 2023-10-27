@@ -15,6 +15,7 @@
 namespace xts {
 namespace func {
 namespace trial {
+namespace D2 {
 
 template <typename ScalarType = double>
 class Rosenbrock : public ObjectiveFunction<ScalarType> {
@@ -62,6 +63,7 @@ private:
   }
 };
 
-} // namespace trial_functions
-} // namespace optimize
+} // namespace D2
+} // namespace trial
+} // namespace func
 } // namespace xts

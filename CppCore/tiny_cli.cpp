@@ -13,13 +13,13 @@
 #include "xtensor/xarray.hpp"
 #include "xtensor-fmt/misc.hpp"
 
-#include "xtsci/func/trial/rosenbrock.hpp"
+#include "xtsci/func/trial/D2/rosenbrock.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
   static_cast<void>(argc);
   static_cast<void>(argv);
-  xts::func::trial::Rosenbrock<double> rosen;
+  xts::func::trial::D2::Rosenbrock<double> rosen;
   // xts::optimize::trial_functions::Himmelblau<double> himmelblau;
   // xts::optimize::trial_functions::QuadraticFunction<double> quadratic;
   // xts::optimize::trial_functions::Eggholder<double> eggholder;

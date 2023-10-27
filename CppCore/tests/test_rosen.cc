@@ -2,14 +2,13 @@
 // Copyright 2023--present Rohit Goswami <HaoZeke>
 #include "xtensor/xarray.hpp"
 
-#include "xtsci/func/trial/rosenbrock.hpp"
+#include "xtsci/func/trial/D2/rosenbrock.hpp"
 
 #include <catch2/catch_all.hpp>
 
 TEST_CASE("Rosenbrock Function properties", "[Rosenbrock]") {
     using Scalar = double;
-    xts::func::trial::Rosenbrock<Scalar> rosenbrock;
-
+    xts::func::trial::D2::Rosenbrock<Scalar> rosenbrock;
     xt::xarray<Scalar> x = xt::xarray<Scalar>::from_shape({2});
 
     SECTION("Value at global minimum is zero") {
@@ -43,7 +42,7 @@ TEST_CASE("Rosenbrock Function properties", "[Rosenbrock]") {
     }
 
     SECTION("Value at arbitrary point") {
-        x = {0.3, 4.0}; // A common non-optimal point
+        x = {0.3, 4.0};
         REQUIRE_THAT(rosenbrock(x), Catch::Matchers::WithinAbs(1529.3, 1e-4));
     }
 
