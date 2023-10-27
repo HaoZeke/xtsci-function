@@ -23,8 +23,14 @@ The heart of the library is the ~xts::func~ namespace.
 
 - Note that this uses designated initializers, a C++20 feature.
 
+** Tests
+
+For the most part these are computed using reference implementations in ~R~, from which ~numericDeriv~ is used to .
+
 ** Provenance
-References are provided, but these were originally conceived for use with [[https://github.com/HaoZeke/xtsci-optimize][xtsci-optimize]].
+References are provided, but these were originally conceived for use with
+[[https://github.com/HaoZeke/xtsci-optimize][xtsci-optimize]]. Most of these are derived from the work of [[https://www.sfu.ca/~ssurjano/index.html][Surjanovic and
+Bingham]] (Virtual Library of Simulation Experiments).
 
 ** License
 MIT.
