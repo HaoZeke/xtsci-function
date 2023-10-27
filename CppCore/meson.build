@@ -16,7 +16,7 @@ if get_option('with_tests')
     )
     test_args = _args
     test_array = [#
-      # ['test_rosen', 'test_rosen.cc', ''],
+      ['test_rosen', 'test_rosen.cc', ''],
     ]
     foreach test : test_array
       test(test.get(0),
