@@ -9,10 +9,11 @@
 #include <iostream>
 #include <random>
 
-#include "xtensor-io/xnpz.hpp"
-#include "xtensor/xarray.hpp"
 #include "xtensor-fmt/misc.hpp"
+#include "xtensor/xarray.hpp"
+#include "xtensor/xvectorize.hpp"
 
+#include "xtsci/func/plot_aid.hpp"
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
 
 int main(int argc, char *argv[]) {
@@ -30,6 +31,15 @@ int main(int argc, char *argv[]) {
   xt::xarray<double> min1 = xt::row(rosen.minima, 0); // {0, 0}
   fmt::print("Rosenbrock Minima: {} with fval {}\n", min1, rosen(min1));
   // clang-format on
+
+  // Grid test
+  // auto z_mesh = xts::func::eval_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}
+  // ,rosen); for (auto i : z_mesh) {
+  //   fmt::print("{} ", i);
+  // }
+
+  // npz test
+  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen);
 
   // clang-format off
   // Muller Brown
