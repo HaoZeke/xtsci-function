@@ -8,7 +8,7 @@ from adjustText import adjust_text
 parser = argparse.ArgumentParser(description="Load and plot grid data from an NPZ file.")
 parser.add_argument("filename", type=str, help="The path to the NPZ file containing grid data.")
 parser.add_argument("--num_minima", type=int, default=1, help="The number of minima to identify and plot.")
-parser.add_argument("--exclusion_radius", type=float, default=0.1, help="The exclusion radius around each minimum on function values.")
+parser.add_argument("--exclusion_radius", type=float, default=0.1, help="The exclusion radius around each minimum in spatial distance.")
 args = parser.parse_args()
 
 # Load data from the specified file
@@ -26,8 +26,12 @@ for _ in range(args.num_minima):
     min_coord = np.unravel_index(min_val_index, z_copy.shape)
     minima_coords.append(min_coord)
 
-    # Mask the area around the minima
-    exclusion_zone = np.where(np.abs(Z - Z[min_coord]) < args.exclusion_radius)
+    # Create a spatial mask for the exclusion zone
+    x_center, y_center = X[min_coord], Y[min_coord]
+    distance_from_center = np.sqrt((X - x_center)**2 + (Y - y_center)**2)
+    exclusion_zone = np.where(distance_from_center < args.exclusion_radius)
+
+    # Mask the values in the exclusion zone
     z_copy[exclusion_zone] = np.inf
 
 # Plotting
