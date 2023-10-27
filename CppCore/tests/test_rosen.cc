@@ -1,9 +1,6 @@
 // MIT License
 // Copyright 2023--present Rohit Goswami <HaoZeke>
-#include "xtensor/xarray.hpp"
-
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
-
 #include <catch2/catch_all.hpp>
 
 TEST_CASE("Rosenbrock Function properties", "[Rosenbrock]") {
@@ -32,15 +29,6 @@ TEST_CASE("Rosenbrock Function properties", "[Rosenbrock]") {
         REQUIRE(hess(0,0) > 0.0);
     }
 
-    SECTION("Hessian at an arbitrary point") {
-        x = {0.3, 2.0};
-        xt::xarray<Scalar> hess = rosenbrock.hessian(x).value();
-        REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-689.9999999, 1e-4));
-        REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(-120, 1e-4));
-        REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(-120, 1e-4));
-        REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(200, 1e-4));
-    }
-
     SECTION("Value at arbitrary point") {
         x = {0.3, 4.0};
         REQUIRE_THAT(rosenbrock(x), Catch::Matchers::WithinAbs(1529.3, 1e-4));
@@ -51,5 +39,14 @@ TEST_CASE("Rosenbrock Function properties", "[Rosenbrock]") {
         xt::xarray<Scalar> grad = rosenbrock.gradient(x).value();
         REQUIRE_THAT(grad(0), Catch::Matchers::WithinAbs(-110.60, 1e-4));
         REQUIRE_THAT(grad(1), Catch::Matchers::WithinAbs(182, 1e-4));
+    }
+
+    SECTION("Hessian at an arbitrary point") {
+        x = {0.3, 2.0};
+        xt::xarray<Scalar> hess = rosenbrock.hessian(x).value();
+        REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-689.9999999, 1e-4));
+        REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(-120, 1e-4));
+        REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(-120, 1e-4));
+        REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(200, 1e-4));
     }
 }
