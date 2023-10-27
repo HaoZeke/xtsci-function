@@ -54,6 +54,50 @@ package:
   size: 23621
   timestamp: 1650670423406
 - platform: linux-64
+  name: adjusttext
+  version: 0.7.3.1
+  category: main
+  manager: conda
+  dependencies:
+  - matplotlib-base
+  - numpy
+  - python
+  url: https://conda.anaconda.org/conda-forge/noarch/adjusttext-0.7.3.1-py_1.tar.bz2
+  hash:
+    md5: 1e4a4438639a2e3e762f0cd4b43c984e
+    sha256: a4d471f2154d4955fd63f27eb8373f89895eddbb9397c4420a5370291610a267
+  build: py_1
+  arch: x86_64
+  subdir: linux-64
+  build_number: 1
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 10956
+  timestamp: 1582809995880
+- platform: osx-64
+  name: adjusttext
+  version: 0.7.3.1
+  category: main
+  manager: conda
+  dependencies:
+  - matplotlib-base
+  - numpy
+  - python
+  url: https://conda.anaconda.org/conda-forge/noarch/adjusttext-0.7.3.1-py_1.tar.bz2
+  hash:
+    md5: 1e4a4438639a2e3e762f0cd4b43c984e
+    sha256: a4d471f2154d4955fd63f27eb8373f89895eddbb9397c4420a5370291610a267
+  build: py_1
+  arch: x86_64
+  subdir: osx-64
+  build_number: 1
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 10956
+  timestamp: 1582809995880
+- platform: linux-64
   name: aom
   version: 3.5.0
   category: main
