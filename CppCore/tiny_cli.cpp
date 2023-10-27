@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   // }
 
   // npz test
-  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen);
+  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen, "rosen.npz");
 
   // clang-format off
   // Muller Brown

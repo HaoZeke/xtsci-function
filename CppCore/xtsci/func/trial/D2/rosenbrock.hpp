@@ -26,7 +26,6 @@ public:
   Rosenbrock() : ObjectiveFunction<ScalarType>(/* minima */ {{1, 1}}) {}
 
 private:
-  // Function evaluation
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     ScalarType x_val = x(0);
     ScalarType y_val = x(1);
@@ -34,7 +33,6 @@ private:
            100 * (y_val - x_val * x_val) * (y_val - x_val * x_val);
   }
 
-  // Gradient computation
   std::optional<xt::xarray<ScalarType>>
   compute_gradient(const xt::xarray<ScalarType> &x) const override {
     ScalarType x_val = x(0);
