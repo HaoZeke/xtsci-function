@@ -17,6 +17,7 @@
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
 #include "xtsci/func/trial/D2/himmelblau.hpp"
 #include "xtsci/func/trial/D2/mullerbrown.hpp"
+#include "xtsci/func/trial/D2/eggholder.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
@@ -25,7 +26,7 @@ int main(int argc, char *argv[]) {
   xts::func::trial::D2::Rosenbrock<double> rosen;
   xts::func::trial::D2::Himmelblau<double> himmelblau;
   // xts::func::trial::D2::QuadraticFunction<double> quadratic;
-  // xts::func::trial::D2::Eggholder<double> eggholder;
+  xts::func::trial::D2::Eggholder<double> eggholder;
   xts::func::trial::D2::MullerBrown<double> mullerbrown;
 
   // clang-format off
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]) {
   xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen, "rosen.npz");
   xts::func::npz_on_grid2D<double>({-5, 5, 400}, {-5, 5, 400}, himmelblau, "himmelblau.npz");
   xts::func::npz_on_grid2D<double>({-1.5, 1.2, 400}, {-0.2, 2.0, 400}, mullerbrown, "mullerbrown.npz");
+  xts::func::npz_on_grid2D<double>({-512, 612, 400}, {-512, 613, 400}, eggholder, "eggholder.npz");
 
   return EXIT_SUCCESS;
 }

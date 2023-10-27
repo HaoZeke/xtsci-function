@@ -17,8 +17,10 @@ meson setup bbdir
 meson compile -C bbdir
 ./bbdir/CppCore/tiny_cli
 # Example
+python scripts/plot_2d.py "rosen.npz"
 python scripts/plot_2d.py "himmelblau.npz" --num_minima 4 --exclusion_radius 1
 python scripts/plot_2d.py "mullerbrown.npz" --num_minima 3 --exclusion_radius 0.8
+python scripts/plot_2d.py "eggholder.npz" --num_minima 5 --exclusion_radius 100
 #+end_src
 
 ** Components
