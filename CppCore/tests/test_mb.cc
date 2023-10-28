@@ -55,7 +55,7 @@ TEST_CASE("MullerBrown Function properties", "[MullerBrown]") {
     //     REQUIRE_THAT(grad(1), Catch::Matchers::WithinAbs(0.0, 1e-4));
     // }
 
-    SECTION("Value at arbitrary point") {
+    SECTION("Value at arbitrary points") {
         x = {-1.050, 0.466};
         REQUIRE_THAT(mullerBrown(x), Catch::Matchers::WithinAbs(-26.4116181673, 1e-4));
         REQUIRE_THAT(mullerBrown({1.623, .38}), Catch::Matchers::WithinAbs(875.435521808, 1e-4));
