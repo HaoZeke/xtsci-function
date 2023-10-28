@@ -1660,6 +1660,53 @@ package:
   size: 792127
   timestamp: 1605751675650
 - platform: linux-64
+  name: gmpy2
+  version: 2.1.2
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  - libgcc-ng >=12
+  - mpc >=1.2.1,<2.0a0
+  - mpfr >=4.1.0,<5.0a0
+  - python >=3.9,<3.10.0a0
+  - python_abi 3.9.* *_cp39
+  url: https://conda.anaconda.org/conda-forge/linux-64/gmpy2-2.1.2-py39h376b7d2_1.tar.bz2
+  hash:
+    md5: d019ebf9a328e19c211be7e916c57b80
+    sha256: f5a5ab463d7d9e9c4f6a70748adf334ad28072c9befe4748d0eaa48fccc24d56
+  build: py39h376b7d2_1
+  arch: x86_64
+  subdir: linux-64
+  build_number: 1
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  size: 222337
+  timestamp: 1666808802904
+- platform: osx-64
+  name: gmpy2
+  version: 2.1.2
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  - mpc >=1.2.1,<2.0a0
+  - mpfr >=4.1.0,<5.0a0
+  - python >=3.9,<3.10.0a0
+  - python_abi 3.9.* *_cp39
+  url: https://conda.anaconda.org/conda-forge/osx-64/gmpy2-2.1.2-py39h2da61ea_1.tar.bz2
+  hash:
+    md5: 57d1deb8ae2f5f74e7da55f2cc4732cc
+    sha256: 05172243422cfd285036f20fc5310e64dd61ccfb1e25501723837dc8ee9b387a
+  build: py39h2da61ea_1
+  arch: x86_64
+  subdir: osx-64
+  build_number: 1
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  size: 169739
+  timestamp: 1666809048661
+- platform: linux-64
   name: gnutls
   version: 3.7.8
   category: main
@@ -4154,6 +4201,126 @@ package:
   size: 616718
   timestamp: 1691536654973
 - platform: linux-64
+  name: mpc
+  version: 1.3.1
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  - libgcc-ng >=12
+  - mpfr >=4.1.0,<5.0a0
+  url: https://conda.anaconda.org/conda-forge/linux-64/mpc-1.3.1-hfe3b2da_0.conda
+  hash:
+    md5: 289c71e83dc0daa7d4c81f04180778ca
+    sha256: 2f88965949ba7b4b21e7e5facd62285f7c6efdb17359d1b365c3bb4ecc968d29
+  build: hfe3b2da_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  size: 116276
+  timestamp: 1674263855481
+- platform: osx-64
+  name: mpc
+  version: 1.3.1
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  - mpfr >=4.1.0,<5.0a0
+  url: https://conda.anaconda.org/conda-forge/osx-64/mpc-1.3.1-h81bd1dd_0.conda
+  hash:
+    md5: c752c0eb6c250919559172c011e5f65b
+    sha256: 2ae945a15c8a984d581dcfb974ad3b5d877a6527de2c95a3363e6b4490b2f312
+  build: h81bd1dd_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  size: 109064
+  timestamp: 1674264109148
+- platform: linux-64
+  name: mpfr
+  version: 4.2.1
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  - libgcc-ng >=12
+  url: https://conda.anaconda.org/conda-forge/linux-64/mpfr-4.2.1-h9458935_0.conda
+  hash:
+    md5: 4c28f3210b30250037a4a627eeee9e0f
+    sha256: 008230a53ff15cf61966476b44f7ba2c779826825b9ca639a0a2b44d8f7aa6cb
+  build: h9458935_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: LGPL-3.0-only
+  license_family: LGPL
+  size: 641512
+  timestamp: 1698004072487
+- platform: osx-64
+  name: mpfr
+  version: 4.2.1
+  category: main
+  manager: conda
+  dependencies:
+  - gmp >=6.2.1,<7.0a0
+  url: https://conda.anaconda.org/conda-forge/osx-64/mpfr-4.2.1-h0c69b56_0.conda
+  hash:
+    md5: d545aecded064848432bc994075dfccf
+    sha256: e7c93a5399661b0528981c6fd53e8614eee3f9ba97f92e8167c092c4a5d9368c
+  build: h0c69b56_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: LGPL-3.0-only
+  license_family: LGPL
+  size: 376506
+  timestamp: 1698004330751
+- platform: linux-64
+  name: mpmath
+  version: 1.3.0
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.6
+  url: https://conda.anaconda.org/conda-forge/noarch/mpmath-1.3.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: dbf6e2d89137da32fa6670f3bffc024e
+    sha256: a4f025c712ec1502a55c471b56a640eaeebfce38dd497d5a1a33729014cac47a
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 438339
+  timestamp: 1678228210181
+- platform: osx-64
+  name: mpmath
+  version: 1.3.0
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.6
+  url: https://conda.anaconda.org/conda-forge/noarch/mpmath-1.3.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: dbf6e2d89137da32fa6670f3bffc024e
+    sha256: a4f025c712ec1502a55c471b56a640eaeebfce38dd497d5a1a33729014cac47a
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 438339
+  timestamp: 1678228210181
+- platform: linux-64
   name: ncurses
   version: '6.4'
   category: main
@@ -5832,6 +5999,54 @@ package:
   license_family: BSD
   size: 2413709
   timestamp: 1670989070228
+- platform: linux-64
+  name: sympy
+  version: '1.12'
+  category: main
+  manager: conda
+  dependencies:
+  - __unix
+  - gmpy2 >=2.0.8
+  - mpmath >=0.19
+  - python * *_cpython
+  - python >=3.8
+  url: https://conda.anaconda.org/conda-forge/noarch/sympy-1.12-pypyh9d50eac_103.conda
+  hash:
+    md5: 2f7d6347d7acf6edf1ac7f2189f44c8f
+    sha256: 0025dd4e6411423903bf478d1b9fbff0cbbbe546f51c9375dfd6729ef2e1a1ac
+  build: pypyh9d50eac_103
+  arch: x86_64
+  subdir: linux-64
+  build_number: 103
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 4256289
+  timestamp: 1684180689319
+- platform: osx-64
+  name: sympy
+  version: '1.12'
+  category: main
+  manager: conda
+  dependencies:
+  - __unix
+  - gmpy2 >=2.0.8
+  - mpmath >=0.19
+  - python * *_cpython
+  - python >=3.8
+  url: https://conda.anaconda.org/conda-forge/noarch/sympy-1.12-pypyh9d50eac_103.conda
+  hash:
+    md5: 2f7d6347d7acf6edf1ac7f2189f44c8f
+    sha256: 0025dd4e6411423903bf478d1b9fbff0cbbbe546f51c9375dfd6729ef2e1a1ac
+  build: pypyh9d50eac_103
+  arch: x86_64
+  subdir: osx-64
+  build_number: 103
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 4256289
+  timestamp: 1684180689319
 - platform: linux-64
   name: tk
   version: 8.6.13
