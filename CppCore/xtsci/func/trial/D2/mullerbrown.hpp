@@ -90,35 +90,36 @@ private:
     return xt::xarray<ScalarType>{df_dx, df_dy};
   }
 
-  std::optional<xt::xarray<ScalarType>>
-  compute_hessian(const xt::xarray<ScalarType> &x) const override {
-    ScalarType x_val = x(0);
-    ScalarType y_val = x(1);
-    ScalarType d2f_dx2 = 0.0;
-    ScalarType d2f_dy2 = 0.0;
-    ScalarType d2f_dxdy = 0.0;
-    ScalarType two = 2;
-    for (size_t i = 0; i < 4; ++i) {
-      ScalarType exponent = a[i] * std::pow(x_val - x0[i], two) +
-                            b[i] * (x_val - x0[i]) * (y_val - y0[i]) +
-                            c[i] * std::pow(y_val - y0[i], two);
-      ScalarType exp_value = std::exp(exponent);
+  // TODO(rgoswami): Fix this
+  // std::optional<xt::xarray<ScalarType>>
+  // compute_hessian(const xt::xarray<ScalarType> &x) const override {
+    // ScalarType x_val = x(0);
+    // ScalarType y_val = x(1);
+    // ScalarType d2f_dx2 = 0.0;
+    // ScalarType d2f_dy2 = 0.0;
+    // ScalarType d2f_dxdy = 0.0;
+    // ScalarType two = 2;
+    // for (size_t i = 0; i < 4; ++i) {
+    //   ScalarType exponent = a[i] * std::pow(x_val - x0[i], two) +
+    //                         b[i] * (x_val - x0[i]) * (y_val - y0[i]) +
+    //                         c[i] * std::pow(y_val - y0[i], two);
+    //   ScalarType exp_value = std::exp(exponent);
 
-      d2f_dx2 += A[i] * exp_value *
-                 ((two * a[i]) * (two * a[i]) + two * a[i] +
-                  b[i] * b[i] * std::pow(y_val - y0[i], two));
-      d2f_dy2 += A[i] * exp_value *
-                 ((two * c[i]) * (two * c[i]) + two * c[i] +
-                  b[i] * b[i] * std::pow(x_val - x0[i], two));
-      d2f_dxdy += A[i] * exp_value *
-                  (two * a[i] * b[i] * (x_val - x0[i]) +
-                   two * c[i] * b[i] * (y_val - y0[i]) +
-                   b[i] * b[i] * (x_val - x0[i]) * (y_val - y0[i]));
-    }
+    //   d2f_dx2 += A[i] * exp_value *
+    //              ((two * a[i]) * (two * a[i]) + two * a[i] +
+    //               b[i] * b[i] * std::pow(y_val - y0[i], two));
+    //   d2f_dy2 += A[i] * exp_value *
+    //              ((two * c[i]) * (two * c[i]) + two * c[i] +
+    //               b[i] * b[i] * std::pow(x_val - x0[i], two));
+    //   d2f_dxdy += A[i] * exp_value *
+    //               (two * a[i] * b[i] * (x_val - x0[i]) +
+    //                two * c[i] * b[i] * (y_val - y0[i]) +
+    //                b[i] * b[i] * (x_val - x0[i]) * (y_val - y0[i]));
+    // }
 
-    xt::xarray<ScalarType> hess = {{d2f_dx2, d2f_dxdy}, {d2f_dxdy, d2f_dy2}};
-    return hess;
-  }
+    // xt::xarray<ScalarType> hess = {{d2f_dx2, d2f_dxdy}, {d2f_dxdy, d2f_dy2}};
+    // return hess;
+  // }
 
   // References:
   // [KMLB] K. Müller and L. D. Brown, “Location of saddle points and minimum
