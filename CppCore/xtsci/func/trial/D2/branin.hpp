@@ -39,12 +39,14 @@ private:
   static constexpr ScalarType r = 6;
   static constexpr ScalarType s = 10;
   static constexpr ScalarType t = 1 / (8 * std::numbers::pi_v<ScalarType>);
+
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     ScalarType x1 = x(0);
     ScalarType x2 = x(1);
     return a * std::pow(x2 - b * x1 * x1 + c * x1 - r, 2) +
            s * (1 - t) * std::cos(x1) + s;
   }
+
   std::optional<xt::xarray<ScalarType>>
   compute_gradient(const xt::xarray<ScalarType> &x) const override {
     ScalarType x1 = x(0);
@@ -55,6 +57,7 @@ private:
     ScalarType df_dx2 = 2 * a * (x2 - b * x1 * x1 + c * x1 - r);
     return xt::xarray<ScalarType>{df_dx1, df_dx2};
   }
+
   std::optional<xt::xarray<ScalarType>>
   compute_hessian(const xt::xarray<ScalarType> &x) const override {
     ScalarType x1 = x(0);
