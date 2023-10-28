@@ -23,6 +23,7 @@ python scripts/plot_2d.py "rosen.npz"
 python scripts/plot_2d.py "himmelblau.npz" --num_minima 4 --exclusion_radius 0.03
 python scripts/plot_2d.py "mullerbrown.npz" --num_minima 3 --exclusion_radius 0.8
 python scripts/plot_2d.py "eggholder.npz" --num_minima 5 --exclusion_radius 100
+python scripts/plot_2d.py "branin.npz" --num_minima 4
 #+end_src
 
 ** Components
