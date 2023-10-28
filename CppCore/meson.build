@@ -20,6 +20,7 @@ if get_option('with_tests')
       ['test_mb', 'test_mb.cc', ''],
       ['test_himmelblau', 'test_himmelblau.cc', ''],
       ['test_eggholder', 'test_eggholder.cc', ''],
+      ['test_branin', 'test_branin.cc', ''],
     ]
     foreach test : test_array
       test(test.get(0),
