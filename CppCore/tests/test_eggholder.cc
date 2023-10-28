@@ -24,7 +24,8 @@ TEST_CASE("Eggholder Function properties", "[Eggholder]") {
   // SECTION("Hessian at first minimum is positive definite") {
   //   x = {512, 404.2319};
   //   xt::xarray<Scalar> hess = eggholderFunc.hessian(x).value();
-  //   // For a 2x2 matrix, it's positive definite if det > 0 and top left value >
+  //   // For a 2x2 matrix, it's positive definite if det > 0 and top left value
+  //   >
   //   // 0
   //   Scalar determinant = hess(0, 0) * hess(1, 1) - hess(0, 1) * hess(1, 0);
   //   REQUIRE(determinant > 0.0);
@@ -32,7 +33,8 @@ TEST_CASE("Eggholder Function properties", "[Eggholder]") {
   // }
 
   SECTION("Value at arbitrary points") {
-    REQUIRE_THAT(eggholderFunc({1, 1}), Catch::Matchers::WithinAbs(-30.7614121992, 1e-4));
+    REQUIRE_THAT(eggholderFunc({1, 1}),
+                 Catch::Matchers::WithinAbs(-30.7614121992, 1e-4));
     REQUIRE_THAT(eggholderFunc({0.5, 0.5}),
                  Catch::Matchers::WithinAbs(-28.1381212887, 1e-4));
     REQUIRE_THAT(eggholderFunc({0.623, 0.028}),
@@ -50,9 +52,11 @@ TEST_CASE("Eggholder Function properties", "[Eggholder]") {
   // SECTION("Hessian at an arbitrary point") {
   //   x = {0.623, 0.028};
   //   xt::xarray<Scalar> hess = eggholderFunc.hessian(x).value();
-  //   REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(0.1712307929993, 1e-4));
-  //   REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(-0.0107824802399, 1e-4));
-  //   REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(-0.0107824802399, 1e-4));
-  //   REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(0.0514380931854, 1e-4));
+  //   REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(0.1712307929993,
+  //   1e-4)); REQUIRE_THAT(hess(0, 1),
+  //   Catch::Matchers::WithinAbs(-0.0107824802399, 1e-4)); REQUIRE_THAT(hess(1,
+  //   0), Catch::Matchers::WithinAbs(-0.0107824802399, 1e-4));
+  //   REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(0.0514380931854,
+  //   1e-4));
   // }
 }

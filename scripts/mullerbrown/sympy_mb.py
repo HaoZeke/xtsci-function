@@ -1,6 +1,7 @@
 import sympy as sp
+
 # Define the variables
-x, y = sp.symbols('x y')
+x, y = sp.symbols("x y")
 
 # Define the parameters for Muller-Brown
 A = [-200, -100, -170, 15]
@@ -11,9 +12,15 @@ x0 = [1, 0, -0.5, -1]
 y0 = [0, 0.5, 1.5, 1]
 
 # Define the Muller-Brown function symbolically
-f = sum(A[i] * sp.exp(a[i] * (x - x0[i])**2 +
-                  b[i] * (x - x0[i]) * (y - y0[i]) +
-                  c[i] * (y - y0[i])**2) for i in range(4))
+f = sum(
+    A[i]
+    * sp.exp(
+        a[i] * (x - x0[i]) ** 2
+        + b[i] * (x - x0[i]) * (y - y0[i])
+        + c[i] * (y - y0[i]) ** 2
+    )
+    for i in range(4)
+)
 
 # Compute the gradient (first derivatives)
 f_grad = sp.Matrix([f.diff(var) for var in (x, y)])

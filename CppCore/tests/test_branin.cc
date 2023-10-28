@@ -62,7 +62,8 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     x = {0, 0};
     xt::xarray<Scalar> hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
-    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-1.43562507629, 1e-4));
+    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-1.43562507629,
+    // 1e-4));
     REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(3.18309879303, 1e-4));
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(3.18309879303, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2, 1e-4));
@@ -70,7 +71,8 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     x = {1, 1};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
-    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(0.19472694397, 1e-4));
+    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(0.19472694397,
+    // 1e-4));
     REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(2.6663607955, 1e-4));
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(2.6663607955, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2, 1e-4));
@@ -78,7 +80,8 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     x = {2, 2};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
-    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.99546986818, 1e-4));
+    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.99546986818,
+    // 1e-4));
     REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(2.14962278306, 1e-4));
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(2.14962278306, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2.0000000596, 1e-4));
@@ -86,7 +89,8 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     x = {-1, -1};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
-    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.16268634796, 1e-4));
+    // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.16268634796,
+    // 1e-4));
     REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(3.69983673096, 1e-4));
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(3.69983673096, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(1.99999904633, 1e-4));

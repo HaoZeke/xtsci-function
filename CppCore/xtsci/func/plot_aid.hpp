@@ -13,7 +13,6 @@
 #include "xtensor-io/xnpz.hpp"
 #include "xtensor/xarray.hpp"
 #include "xtensor/xvectorize.hpp"
-#include "xtensor-io/xnpz.hpp"
 
 #include "xtsci/func/helpers.hpp"
 
