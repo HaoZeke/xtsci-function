@@ -5,8 +5,10 @@ and saddle search methods. The repository also includes standard test functions
 from statistics and chemistry.
 
 Trial functions implemented:
-- Rosenbrock function
-- Himmelblau's function
+- [x] Rosenbrock function
+- [x] Himmelblau's function
+- [x] Eggholder's function
+- [x] Muller-Brown function
 
 ** Usage
 Until bindings are ready, ~tiny_cli.cpp~ can be edited and run with the ~python~ scripts
@@ -30,7 +32,8 @@ The heart of the library is the ~xts::func~ namespace.
 
 ** Tests
 
-For the most part these are computed using reference implementations in ~R~, from which ~numericDeriv~ is used to .
+For the most part these are computed using reference implementations in ~R~, or
+via ~sympy~. These "generating" scripts are also in the ~scripts~ folder.
 
 ** Provenance
 References are provided, but these were originally conceived for use with
