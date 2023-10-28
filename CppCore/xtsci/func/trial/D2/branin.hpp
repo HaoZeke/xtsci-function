@@ -1,16 +1,9 @@
 #pragma once
 // MIT License
 // Copyright 2023--present Rohit Goswami <HaoZeke>
-#include <algorithm>
-#include <functional>
-#include <limits>
 #include <numbers>
-#include <optional>
-#include <string>
-#include <vector>
 
 #include "xtensor-blas/xlinalg.hpp"
-
 #include "xtsci/func/base.hpp"
 
 namespace xts {
