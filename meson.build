@@ -63,6 +63,6 @@ _deps += [xtensor_fmt_dep]
 # --------------------- Projects
 subdir('CppCore')
 _incdirs += [ 'CppCore' ]
-xtsci_optimize_dep = declare_dependency(include_directories: _incdirs,
-                                      link_with: _linkto,
-                                      dependencies: _deps)
+xtsci_function_dep = declare_dependency(include_directories: _incdirs,
+                                        link_with: _linkto,
+                                        dependencies: _deps)
