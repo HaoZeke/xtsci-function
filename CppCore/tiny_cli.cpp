@@ -12,6 +12,7 @@
 #include "xtensor-fmt/misc.hpp"
 #include "xtensor/xarray.hpp"
 #include "xtensor/xlayout.hpp"
+#include "xtensor/xshape.hpp"
 #include "xtensor/xvectorize.hpp"
 
 #include "xtsci/func/plot_aid.hpp"
@@ -249,14 +250,22 @@ int main(int argc, char *argv[]) {
   auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
 
   auto positions = extract_positions(frame);
-  auto atomTypes = xt::adapt(yodecon::symbols_to_atomic_numbers(frame.symbol));
-  auto boxMatrix = frame.boxl;
+auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
+xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
+for(size_t i = 0; i < atomNumbersVec.size(); ++i) {
+    atomTypes(i) = atomNumbersVec[i];
+}
+// std::array<size_t, 2> shape = {1, 3};
+xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1,3}));
+for(size_t i = 0; i < 3; ++i) {
+    boxMatrix(0, i) = frame.boxl[i];
+}
 
-  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, xt::adapt(boxMatrix));
+  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix);
 
-  double energy = objFunc(xt::ravel<xt::layout_type::row_major>(positions));
+  double energy = objFunc(positions);
   auto grad =
-      objFunc.gradient(xt::ravel<xt::layout_type::row_major>(positions));
+      objFunc.gradient(positions);
   // Reference:
   // Got energy -2.7114093289369636
   //  Forces:
@@ -264,21 +273,21 @@ int main(int argc, char *argv[]) {
   //     -1.49194  0.000392731 -0.000182606
   //     -4.91186 -1.39442e-05    4.799e-06
   //      4.91186  1.39442e-05   -4.799e-06%
-  auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
-  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+  // auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
+  // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
 
-  auto new_positions = peturb_positions(positions, atomTypes, cusdist, hdist);
-  fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
-  fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
+  // auto new_positions = peturb_positions(positions, atomTypes, cusdist, hdist);
+  // fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
+  // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
 
-  fmt::print("Got energy {}\n", energy);
-  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
-  double new_energy =
-      objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
-  auto new_grad =
-      objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
-  fmt::print("Got new energy {}\n", new_energy);
-  fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
+  // fmt::print("Got energy {}\n", energy);
+  // fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  // double new_energy =
+  //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // auto new_grad =
+  //     objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // fmt::print("Got new energy {}\n", new_energy);
+  // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
 
   auto energyFunc = [&objFunc, &positions, &atomTypes](
                         double hh_dist, double cu_slab_dist) -> double {
