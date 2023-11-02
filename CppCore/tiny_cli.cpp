@@ -11,6 +11,7 @@
 
 #include "xtensor-fmt/misc.hpp"
 #include "xtensor/xarray.hpp"
+#include "xtensor/xlayout.hpp"
 #include "xtensor/xvectorize.hpp"
 
 #include "xtsci/func/plot_aid.hpp"
@@ -19,6 +20,9 @@
 #include "xtsci/func/trial/D2/himmelblau.hpp"
 #include "xtsci/func/trial/D2/mullerbrown.hpp"
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
+
+#include "rgpot/CuH2/CuH2Pot.hpp"
+#include "xtsci/pot/base.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
@@ -92,5 +96,35 @@ int main(int argc, char *argv[]) {
       "Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
       branin_fixed(x), *branin_fixed.gradient(x), branin_fixed.m_isFixed[0],
       branin_fixed.m_isFixed[1]);
+
+  auto cuh2pot = std::make_shared<rgpot::CuH2Pot>();
+  xt::xtensor<int, 1> atomTypes{{29, 29, 1, 1}};
+  xt::xtensor<double, 2> boxMatrix{
+      {15, 0, 0},
+      {0, 20, 0},
+      {0, 0, 30},
+  };
+
+  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix);
+  xt::xtensor<double, 2> positions{
+      {0.63940268750835, 0.90484742551374, 6.97516498544584}, // Cu
+      {3.19652040936288, 0.90417430354811, 6.97547796369474}, // Cu
+      {8.98363230369760, 9.94703496017833, 7.83556854923689}, // H
+      {7.64080177576300, 9.94703114803832, 7.83556986121272}, // H
+  };
+
+  double energy = objFunc(xt::ravel<xt::layout_type::row_major>(positions));
+  auto grad =
+      objFunc.gradient(xt::ravel<xt::layout_type::row_major>(positions));
+  // Reference:
+  // Got energy -2.7114093289369636
+  //  Forces:
+  //      1.49194 -0.000392731  0.000182606
+  //     -1.49194  0.000392731 -0.000182606
+  //     -4.91186 -1.39442e-05    4.799e-06
+  //      4.91186  1.39442e-05   -4.799e-06%
+
+  fmt::print("Got energy {}\n", energy);
+  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
   return EXIT_SUCCESS;
 }
