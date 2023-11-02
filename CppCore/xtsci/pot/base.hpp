@@ -58,7 +58,8 @@ private:
 
     // Convert forces to gradient (assuming negative relation)
     auto gradient = -1.0 * forces_xtensor;
-    return gradient;
+    auto flattened_gradient = xt::flatten(gradient);
+    return flattened_gradient;
   }
 
   xt::xtensor<double, 2>
