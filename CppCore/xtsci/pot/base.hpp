@@ -64,8 +64,8 @@ private:
 
   xt::xtensor<double, 2>
   reshape_x_to_positions(const xt::xarray<ScalarType> &x) const {
-    auto x_mutable = x;
-    return x_mutable.reshape({m_atomTypes.size(), 3});
+    std::array<std::size_t, 2> shape = {m_atomTypes.size(), 3};
+    return xt::reshape_view(x, shape);
   }
 };
 
