@@ -12,6 +12,7 @@
 #include "rgpot/Potential.hpp"
 #include "rgpot/types/adapters/xtensor.hpp"
 #include "xtsci/func/base.hpp"
+#include <xtensor/xadapt.hpp>
 
 namespace xts {
 namespace pot {
@@ -34,21 +35,36 @@ private:
   std::array<std::array<double, 3>, 3> m_box;
 
   virtual ScalarType compute(const xt::xarray<ScalarType> &x) const override {
-    // Create a mutable copy.
-    auto x_mutable = x;
+    xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
 
-    // Assuming x is a flattened version of positions.
-    // We reshape it back into the shape of positions.
-    xt::xtensor<double, 2> positions =
-        x_mutable.reshape({m_atomTypes.size(), 3});
-
-    // Use the stored Potential object to compute energy and forces.
     auto [energy, forces] =
         (*m_pot)(rgpot::types::adapt::xtensor::convertToAtomMatrix(positions),
                  m_atomTypes, m_box);
 
-    return energy; // Assuming we only want the energy for the objective
-                   // function.
+    return energy;
+  }
+
+  virtual std::optional<xt::xarray<ScalarType>>
+  compute_gradient(const xt::xarray<ScalarType> &x) const override {
+    xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
+
+    auto [energy, forces] =
+        (*m_pot)(rgpot::types::adapt::xtensor::convertToAtomMatrix(positions),
+                 m_atomTypes, m_box);
+
+    std::array<size_t, 2> shape = {m_atomTypes.size(), 3};
+    auto forces_xtensor =
+        xt::adapt(forces.data(), shape, xt::layout_type::row_major);
+
+    // Convert forces to gradient (assuming negative relation)
+    auto gradient = -1.0 * forces_xtensor;
+    return gradient;
+  }
+
+  xt::xtensor<double, 2>
+  reshape_x_to_positions(const xt::xarray<ScalarType> &x) const {
+    auto x_mutable = x;
+    return x_mutable.reshape({m_atomTypes.size(), 3});
   }
 };
 
