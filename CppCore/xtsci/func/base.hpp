@@ -39,7 +39,7 @@ public: // Variables
 public: // Constructors and destructor
   virtual ~ObjectiveFunction() = default;
   // Default constructor
-  ObjectiveFunction(size_t dims)
+  explicit ObjectiveFunction(size_t dims)
       : m_dims(dims), m_isFixed(xt::zeros<bool>({m_dims})) {
     auto shape = std::vector<size_t>{
         0, m_dims}; // Create an empty tensor with 0 rows and m_dims columns
