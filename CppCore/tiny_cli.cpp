@@ -24,12 +24,12 @@ int main(int argc, char *argv[]) {
   // Eat warnings, also safer
   static_cast<void>(argc);
   static_cast<void>(argv);
-  xts::func::trial::D2::Rosenbrock<double> rosen;
-  xts::func::trial::D2::Himmelblau<double> himmelblau;
-  // xts::func::trial::D2::QuadraticFunction<double> quadratic;
-  xts::func::trial::D2::Eggholder<double> eggholder;
-  xts::func::trial::D2::MullerBrown<double> mullerbrown;
-  xts::func::trial::D2::Branin<double> branin;
+  // xts::func::trial::D2::Rosenbrock<double> rosen;
+  // xts::func::trial::D2::Himmelblau<double> himmelblau;
+  // // xts::func::trial::D2::QuadraticFunction<double> quadratic;
+  // xts::func::trial::D2::Eggholder<double> eggholder;
+  // xts::func::trial::D2::MullerBrown<double> mullerbrown;
+  // xts::func::trial::D2::Branin<double> branin;
 
   // clang-format off
   // Rosenbrock
@@ -66,17 +66,25 @@ int main(int argc, char *argv[]) {
   //            min4, himmelblau(min4));
   // clang-format on
 
+  // clang-format off
   // npz test
-  xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen,
-                                   "rosen.npz");
-  xts::func::npz_on_grid2D<double>({-5, 5, 400}, {-5, 5, 400}, himmelblau,
-                                   "himmelblau.npz");
-  xts::func::npz_on_grid2D<double>({-1.5, 1.2, 400}, {-0.2, 2.0, 400},
-                                   mullerbrown, "mullerbrown.npz");
-  xts::func::npz_on_grid2D<double>({-512, 612, 400}, {-512, 613, 400},
-                                   eggholder, "eggholder.npz");
-  xts::func::npz_on_grid2D<double>({-5, 18, 400}, {-5, 20, 400}, branin,
-                                   "branin.npz");
+  // xts::func::npz_on_grid2D<double>({-2, 2, 100}, {-2, 2, 100}, rosen,
+  //                                  "rosen.npz");
+  // xts::func::npz_on_grid2D<double>({-5, 5, 400}, {-5, 5, 400}, himmelblau,
+  //                                  "himmelblau.npz");
+  // xts::func::npz_on_grid2D<double>({-1.5, 1.2, 400}, {-0.2, 2.0, 400},
+  //                                  mullerbrown, "mullerbrown.npz");
+  // xts::func::npz_on_grid2D<double>({-512, 612, 400}, {-512, 613, 400},
+  //                                  eggholder, "eggholder.npz");
+  // xts::func::npz_on_grid2D<double>({-5, 18, 400}, {-5, 20, 400}, branin,
+  //                                  "branin.npz");
+  // clang-format on
+  xt::xtensor<bool, 1> fixedMask = {true, false};
+  xts::func::trial::D2::Branin<double> branin_fixed(fixedMask);
+  xt::xarray<double> x = {1.0, 1.0};
 
+  fmt::print("Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
+             branin_fixed(x), *branin_fixed.gradient(x),
+             branin_fixed.m_isFixed[0], branin_fixed.m_isFixed[1]);
   return EXIT_SUCCESS;
 }
