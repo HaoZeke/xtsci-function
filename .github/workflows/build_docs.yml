@@ -26,7 +26,7 @@ jobs:
           --exclude=.git \
           --exclude=.github \
           -cvf "$RUNNER_TEMP/artifact.tar" \
-          --directory=html .
+          --directory=doc/build/html .
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
