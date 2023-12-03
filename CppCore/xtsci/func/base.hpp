@@ -25,11 +25,13 @@ struct EvaluationCounter {
   size_t unique_func_grad = 0;
 };
 
-template <typename ScalarType = double, size_t Dims = 2>
-class ObjectiveFunction {
+template <typename ScalarType = double> class ObjectiveFunction {
+private:
+  size_t m_dims;
+
 public: // Variables
-        // TODO(rg): Better sanity checks, make m_isFixed private and check dims
-        // on setter
+        // TODO(rg): Better sanity checks, make m_isFixed private and check
+        // m_dims on setter
   xt::xtensor<ScalarType, 2> minima;
   xt::xtensor<ScalarType, 2> saddles;
   xt::xtensor<bool, 1> m_isFixed;
@@ -37,15 +39,16 @@ public: // Variables
 public: // Constructors and destructor
   virtual ~ObjectiveFunction() = default;
   // Default constructor
-  ObjectiveFunction() : m_isFixed(xt::zeros<bool>({Dims})) {
+  ObjectiveFunction(size_t dims)
+      : m_dims(dims), m_isFixed(xt::zeros<bool>({m_dims})) {
     minima = xt::xtensor<ScalarType, 1>::empty();
     saddles = xt::xtensor<ScalarType, 1>::empty();
   }
 
   // Constructor with optional fixed mask
-  explicit ObjectiveFunction(const xt::xtensor<bool, 1> &isFixed)
-      : m_isFixed(isFixed) {
-    if (m_isFixed.size() != Dims) {
+  explicit ObjectiveFunction(size_t dims, const xt::xtensor<bool, 1> &isFixed)
+      : m_dims(dims), m_isFixed(isFixed) {
+    if (m_isFixed.size() != m_dims) {
       throw std::invalid_argument(
           "Size of isFixed mask does not match the problem dimensionality.");
     }
