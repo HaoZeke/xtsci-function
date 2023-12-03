@@ -41,8 +41,10 @@ public: // Constructors and destructor
   // Default constructor
   ObjectiveFunction(size_t dims)
       : m_dims(dims), m_isFixed(xt::zeros<bool>({m_dims})) {
-    minima = xt::xtensor<ScalarType, 1>::empty();
-    saddles = xt::xtensor<ScalarType, 1>::empty();
+    auto shape = std::vector<size_t>{
+        0, m_dims}; // Create an empty tensor with 0 rows and m_dims columns
+    minima = xt::empty<ScalarType>(shape);
+    saddles = xt::empty<ScalarType>(shape);
   }
 
   // Constructor with optional fixed mask
@@ -52,6 +54,9 @@ public: // Constructors and destructor
       throw std::invalid_argument(
           "Size of isFixed mask does not match the problem dimensionality.");
     }
+    auto shape = std::vector<size_t>{0, m_dims};
+    minima = xt::empty<ScalarType>(shape);
+    saddles = xt::empty<ScalarType>(shape);
   }
 
 public: // Functions and Operators
