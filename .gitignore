@@ -104,3 +104,5 @@ grid.npz
 *.npz
 !/subprojects/*.wrap
 /subprojects/**/
+/subprojects/range-v3.wrap
+/subprojects/fortcuh2.wrap
