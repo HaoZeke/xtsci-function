@@ -25,9 +25,11 @@ struct EvaluationCounter {
   size_t unique_func_grad = 0;
 };
 
-template <typename ScalarType = double, size_t Dims = 2> class ObjectiveFunction {
+template <typename ScalarType = double, size_t Dims = 2>
+class ObjectiveFunction {
 public: // Variables
-    // TODO: Better sanity checks, make m_isFixed private and check dims on setter
+        // TODO: Better sanity checks, make m_isFixed private and check dims on
+        // setter
   xt::xtensor<ScalarType, 2> minima;
   xt::xtensor<ScalarType, 2> saddles;
   xt::xtensor<bool, 1> m_isFixed;
@@ -44,9 +46,11 @@ public: // Constructors and destructor
   explicit ObjectiveFunction(const xt::xtensor<bool, 1> &isFixed)
       : m_isFixed(isFixed) {
     if (m_isFixed.size() != Dims) {
-      throw std::invalid_argument("Size of isFixed mask does not match the problem dimensionality.");
+      throw std::invalid_argument(
+          "Size of isFixed mask does not match the problem dimensionality.");
     }
   }
+
 public: // Functions and Operators
   ScalarType operator()(const xt::xarray<ScalarType> &x) const {
     ++m_counter.function_evals;

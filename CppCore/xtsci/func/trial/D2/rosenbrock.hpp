@@ -25,7 +25,7 @@ class Rosenbrock : public ObjectiveFunction<ScalarType, 2> {
 public:
   Rosenbrock(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
       : ObjectiveFunction<ScalarType, 2>(isFixed) {
-        this->minima = {{1.0, 1.0}};
+    this->minima = {{1.0, 1.0}};
   }
 
 private:

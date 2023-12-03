@@ -83,8 +83,9 @@ int main(int argc, char *argv[]) {
   xts::func::trial::D2::Branin<double> branin_fixed(fixedMask);
   xt::xarray<double> x = {1.0, 1.0};
 
-  fmt::print("Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
-             branin_fixed(x), *branin_fixed.gradient(x),
-             branin_fixed.m_isFixed[0], branin_fixed.m_isFixed[1]);
+  fmt::print(
+      "Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
+      branin_fixed(x), *branin_fixed.gradient(x), branin_fixed.m_isFixed[0],
+      branin_fixed.m_isFixed[1]);
   return EXIT_SUCCESS;
 }
