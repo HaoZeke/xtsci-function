@@ -293,10 +293,10 @@ for(size_t i = 0; i < 3; ++i) {
                         double hh_dist, double cu_slab_dist) -> double {
     auto perturbed_positions =
         peturb_positions(positions, atomTypes, cu_slab_dist, hh_dist);
-    return objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions));
+    return objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) - ( -697.311695 );
   };
 
-  xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {0.05, 5.1, 60}, energyFunc,
+  xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60}, energyFunc,
                                    "cuh2_grid.npz");
 
   return EXIT_SUCCESS;
