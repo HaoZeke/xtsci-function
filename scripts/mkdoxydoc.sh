@@ -13,6 +13,9 @@ THEME_URL="https://github.com/HaoZeke/doxyYoda/releases/download/${THEME_VERSION
 THEME_TAR="${DOC_DIR}/doxyYoda_${THEME_VERSION}.tar.gz"
 THEME_DIR="${DOC_DIR}/doxyYoda"
 CFG_FILE="${DOC_DIR}/Doxygen-proj.cfg"
+TAGS_DIR="${DOC_DIR}/tags"
+CPP_REF_TAG_URL="https://upload.cppreference.com/mwiki/images/f/f8/cppreference-doxygen-web.tag.xml"
+CPP_REF_TAG_FILE="${TAGS_DIR}/cppreference-doxygen-web.tag.xml"
 
 # Ensure the documentation directory exists
 if [ ! -d "$DOC_DIR" ]; then
@@ -46,6 +49,27 @@ else
     mkdir -p "$THEME_DIR"
     tar -xf "$THEME_TAR" -C "$THEME_DIR" --strip-components=1 || {
         echo "Error: Extraction failed"
+        exit 1
+    }
+fi
+
+# Download CPP Reference Tags
+if [ ! -d "$TAGS_DIR" ]; then
+    echo "Creating tags directory..."
+    mkdir -p "$TAGS_DIR"
+fi
+
+cd "$TAGS_DIR" || {
+    echo "Error: Failed to navigate to tags directory"
+    exit 1
+}
+
+if [ -f "$CPP_REF_TAG_FILE" ]; then
+    echo "CPP Reference tags already downloaded."
+else
+    echo "Downloading CPP Reference tags..."
+    curl -o "$CPP_REF_TAG_FILE" "$CPP_REF_TAG_URL" || {
+        echo "Error: Tags download failed"
         exit 1
     }
 fi
