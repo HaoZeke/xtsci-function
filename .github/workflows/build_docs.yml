@@ -13,23 +13,10 @@ jobs:
         with:
           pixi-version: v0.6.0
           cache: true
-      - name: Get external tags
+      - name: Build documentation
         shell: pixi run bash {0}
         run: |
-          cd doc/apidocs
-          mkdir -p tags
-          cd tags
-          curl https://upload.cppreference.com/mwiki/images/f/f8/cppreference-doxygen-web.tag.xml -o cppreference-doxygen-web.tag.xml
-      - name: Get Theme
-        shell: pixi run bash {0}
-        run: |
-          cd doc/apidocs
-          wget https://github.com/HaoZeke/doxyYoda/releases/download/0.0.2/doxyYoda_0.0.2.tar.gz
-          tar xf doxyYoda_0.0.2.tar.gz
-      - name: Generate Docs
-        shell: pixi run bash {0}
-        run: |
-          doxygen apidocs/Doxygen-proj.cfg
+          ./scripts/mkdoxydoc.sh
       - name: Archive artifact
         shell: pixi run bash {0}
         if: runner.os == 'Linux'
