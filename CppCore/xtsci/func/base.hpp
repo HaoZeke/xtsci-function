@@ -28,8 +28,8 @@ struct EvaluationCounter {
 template <typename ScalarType = double, size_t Dims = 2>
 class ObjectiveFunction {
 public: // Variables
-        // TODO: Better sanity checks, make m_isFixed private and check dims on
-        // setter
+        // TODO(rg): Better sanity checks, make m_isFixed private and check dims
+        // on setter
   xt::xtensor<ScalarType, 2> minima;
   xt::xtensor<ScalarType, 2> saddles;
   xt::xtensor<bool, 1> m_isFixed;

@@ -23,7 +23,8 @@ class Himmelblau : public ObjectiveFunction<ScalarType, 2> {
   // Global minima are at (3, 2) and (-2.805118, 3.131312) and (-3.779310,
   // -3.283186) and (3.584428, -1.848126)
 public:
-  Himmelblau(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
+  explicit Himmelblau(
+      const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
       : ObjectiveFunction<ScalarType, 2>(isFixed) {
     this->minima = {{3, 2},
                     {-2.805118, 3.131312},

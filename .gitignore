@@ -1,6 +1,9 @@
 # Additional
 .pixi
 .compile_commands.json
+doc/apidocs/doxyYoda
+doc/build
+!doc/changelog.d
 # Created by https://www.toptal.com/developers/gitignore/api/c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++
 
@@ -106,3 +109,4 @@ grid.npz
 /subprojects/**/
 /subprojects/range-v3.wrap
 /subprojects/fortcuh2.wrap
+/doc/apidocs/tags/

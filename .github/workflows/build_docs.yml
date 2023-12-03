@@ -1,0 +1,53 @@
+name: Build documentation
+on: [push, pull_request]
+jobs:
+  build_docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.3.0
+        with:
+          pixi-version: v0.6.0
+          cache: true
+      - name: Build documentation
+        shell: pixi run bash {0}
+        run: |
+          ./scripts/mkdoxydoc.sh
+      - name: Archive artifact
+        shell: pixi run bash {0}
+        if: runner.os == 'Linux'
+        run: |
+          tar \
+          --dereference --hard-dereference \
+          --exclude=.git \
+          --exclude=.github \
+          -cvf "$RUNNER_TEMP/artifact.tar" \
+          --directory=doc/build/html .
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          if-no-files-found: error
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build_docs
+    if: github.event_name == 'push'
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
