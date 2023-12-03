@@ -755,6 +755,48 @@ package:
   size: 153791
   timestamp: 1690024617757
 - platform: linux-64
+  name: click
+  version: 8.1.7
+  category: main
+  manager: conda
+  dependencies:
+  - __unix
+  - python >=3.8
+  url: https://conda.anaconda.org/conda-forge/noarch/click-8.1.7-unix_pyh707e725_0.conda
+  hash:
+    md5: f3ad426304898027fc619827ff428eca
+    sha256: f0016cbab6ac4138a429e28dbcb904a90305b34b3fe41a9b89d697c90401caec
+  build: unix_pyh707e725_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 84437
+  timestamp: 1692311973840
+- platform: osx-64
+  name: click
+  version: 8.1.7
+  category: main
+  manager: conda
+  dependencies:
+  - __unix
+  - python >=3.8
+  url: https://conda.anaconda.org/conda-forge/noarch/click-8.1.7-unix_pyh707e725_0.conda
+  hash:
+    md5: f3ad426304898027fc619827ff428eca
+    sha256: f0016cbab6ac4138a429e28dbcb904a90305b34b3fe41a9b89d697c90401caec
+  build: unix_pyh707e725_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 84437
+  timestamp: 1692311973840
+- platform: linux-64
   name: cmake
   version: 3.25.1
   category: main
@@ -2216,6 +2258,48 @@ package:
   size: 155943
   timestamp: 1685625210576
 - platform: linux-64
+  name: incremental
+  version: 22.10.0
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.6
+  - setuptools
+  url: https://conda.anaconda.org/conda-forge/noarch/incremental-22.10.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: 3e8ffb42d8afbbec87d92a3aa46c0969
+    sha256: 5a31d75899b1f0e40d9b366921f35981509e9537ca0150e590c9b9b0daf30f21
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 18667
+  timestamp: 1665859549369
+- platform: osx-64
+  name: incremental
+  version: 22.10.0
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.6
+  - setuptools
+  url: https://conda.anaconda.org/conda-forge/noarch/incremental-22.10.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: 3e8ffb42d8afbbec87d92a3aa46c0969
+    sha256: 5a31d75899b1f0e40d9b366921f35981509e9537ca0150e590c9b9b0daf30f21
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 18667
+  timestamp: 1665859549369
+- platform: linux-64
   name: ipython
   version: 8.18.1
   category: main
@@ -2347,6 +2431,48 @@ package:
   noarch: python
   size: 841312
   timestamp: 1696326218364
+- platform: linux-64
+  name: jinja2
+  version: 3.1.2
+  category: main
+  manager: conda
+  dependencies:
+  - markupsafe >=2.0
+  - python >=3.7
+  url: https://conda.anaconda.org/conda-forge/noarch/jinja2-3.1.2-pyhd8ed1ab_1.tar.bz2
+  hash:
+    md5: c8490ed5c70966d232fdd389d0dbed37
+    sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
+  build: pyhd8ed1ab_1
+  arch: x86_64
+  subdir: linux-64
+  build_number: 1
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 101443
+  timestamp: 1654302514195
+- platform: osx-64
+  name: jinja2
+  version: 3.1.2
+  category: main
+  manager: conda
+  dependencies:
+  - markupsafe >=2.0
+  - python >=3.7
+  url: https://conda.anaconda.org/conda-forge/noarch/jinja2-3.1.2-pyhd8ed1ab_1.tar.bz2
+  hash:
+    md5: c8490ed5c70966d232fdd389d0dbed37
+    sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
+  build: pyhd8ed1ab_1
+  arch: x86_64
+  subdir: osx-64
+  build_number: 1
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 101443
+  timestamp: 1654302514195
 - platform: linux-64
   name: jpeg
   version: 9e
@@ -4698,6 +4824,51 @@ package:
   license_family: BSD
   size: 156415
   timestamp: 1674727335352
+- platform: linux-64
+  name: markupsafe
+  version: 2.1.3
+  category: main
+  manager: conda
+  dependencies:
+  - libgcc-ng >=12
+  - python >=3.10,<3.11.0a0
+  - python_abi 3.10.* *_cp310
+  url: https://conda.anaconda.org/conda-forge/linux-64/markupsafe-2.1.3-py310h2372a71_1.conda
+  hash:
+    md5: b74e07a054c479e45a83a83fc5be713c
+    sha256: ac46cc2f6d4bbeedcd2f508e43f43143a9286ced55730d8d97a3c91ceceb0d56
+  build: py310h2372a71_1
+  arch: x86_64
+  subdir: linux-64
+  build_number: 1
+  constrains:
+  - jinja2 >=3.0.0
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 24054
+  timestamp: 1695367637074
+- platform: osx-64
+  name: markupsafe
+  version: 2.1.3
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.10,<3.11.0a0
+  - python_abi 3.10.* *_cp310
+  url: https://conda.anaconda.org/conda-forge/osx-64/markupsafe-2.1.3-py310h6729b98_1.conda
+  hash:
+    md5: 000b20b3974452969efe63f980b69e33
+    sha256: 62076b034a92959d25a1321a4340745ff87b5d191b3fcfef607b746daeb845c5
+  build: py310h6729b98_1
+  arch: x86_64
+  subdir: osx-64
+  build_number: 1
+  constrains:
+  - jinja2 >=3.0.0
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 23056
+  timestamp: 1695367898746
 - platform: linux-64
   name: matplotlib
   version: 3.8.2
@@ -7135,6 +7306,26 @@ package:
   noarch: python
   size: 15940
   timestamp: 1644342331069
+- platform: osx-64
+  name: tomli
+  version: 2.0.1
+  category: main
+  manager: conda
+  dependencies:
+  - python >=3.7
+  url: https://conda.anaconda.org/conda-forge/noarch/tomli-2.0.1-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: 5844808ffab9ebdb694585b50ba02a96
+    sha256: 4cd48aba7cd026d17e86886af48d0d2ebc67ed36f87f6534f4b67138f5a5a58f
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 15940
+  timestamp: 1644342331069
 - platform: linux-64
   name: tornado
   version: 6.3.3
@@ -7176,6 +7367,56 @@ package:
   license_family: Apache
   size: 642837
   timestamp: 1695373842662
+- platform: linux-64
+  name: towncrier
+  version: 23.11.0
+  category: main
+  manager: conda
+  dependencies:
+  - click
+  - incremental
+  - jinja2
+  - python >=3.7
+  - setuptools
+  - tomli
+  url: https://conda.anaconda.org/conda-forge/noarch/towncrier-23.11.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 921be084bcace0519554a07adeab328f
+    sha256: fec84473a16761891d18aebab38b5763b32a34c2597dc082cfd6866e5e459f0e
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 42112
+  timestamp: 1699465631380
+- platform: osx-64
+  name: towncrier
+  version: 23.11.0
+  category: main
+  manager: conda
+  dependencies:
+  - click
+  - incremental
+  - jinja2
+  - python >=3.7
+  - setuptools
+  - tomli
+  url: https://conda.anaconda.org/conda-forge/noarch/towncrier-23.11.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 921be084bcace0519554a07adeab328f
+    sha256: fec84473a16761891d18aebab38b5763b32a34c2597dc082cfd6866e5e459f0e
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: osx-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  noarch: python
+  size: 42112
+  timestamp: 1699465631380
 - platform: linux-64
   name: traitlets
   version: 5.12.0
