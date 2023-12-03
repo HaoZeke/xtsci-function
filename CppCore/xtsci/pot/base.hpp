@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <functional>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <string>
 #include <utility>
@@ -41,7 +42,7 @@ private:
   std::array<std::array<double, 3>, 3> m_box;
   xt::xtensor<bool, 1> m_fixedMask;
 
-  virtual ScalarType compute(const xt::xarray<ScalarType> &x) const override {
+  ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
 
     auto [energy, forces] =
@@ -51,7 +52,7 @@ private:
     return energy;
   }
 
-  virtual std::optional<xt::xarray<ScalarType>>
+  std::optional<xt::xarray<ScalarType>>
   compute_gradient(const xt::xarray<ScalarType> &x) const override {
     xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
 

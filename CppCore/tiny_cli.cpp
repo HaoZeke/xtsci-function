@@ -25,24 +25,24 @@
 #include "rgpot/CuH2/CuH2Pot.hpp"
 #include "xtsci/pot/base.hpp"
 
-#include "Helpers.hpp"
 #include "include/BaseTypes.hpp"
 #include "include/FormatConstants.hpp"
 #include "include/ReadCon.hpp"
 #include "include/helpers/StringHelpers.hpp"
 
-xt::xtensor<double, 2> extract_positions(const yodecon::types::ConFrameVec& frame) {
-    size_t n_atoms = frame.x.size();
-    std::array<size_t, 2> shape = {static_cast<size_t>(n_atoms), 3};
+xt::xtensor<double, 2>
+extract_positions(const yodecon::types::ConFrameVec &frame) {
+  size_t n_atoms = frame.x.size();
+  std::array<size_t, 2> shape = {static_cast<size_t>(n_atoms), 3};
 
-    xt::xtensor<double, 2> positions = xt::empty<double>(shape);
-    for (size_t i = 0; i < n_atoms; ++i) {
-        positions(i, 0) = frame.x[i];
-        positions(i, 1) = frame.y[i];
-        positions(i, 2) = frame.z[i];
-    }
+  xt::xtensor<double, 2> positions = xt::empty<double>(shape);
+  for (size_t i = 0; i < n_atoms; ++i) {
+    positions(i, 0) = frame.x[i];
+    positions(i, 1) = frame.y[i];
+    positions(i, 2) = frame.z[i];
+  }
 
-    return positions;
+  return positions;
 }
 
 xt::xtensor<double, 1> normalize(const xt::xtensor<double, 1> &vec) {
@@ -243,29 +243,27 @@ int main(int argc, char *argv[]) {
   //     {7.64080177576300, 9.94703114803832, 7.83556986121272}, // H
   // };
 
-
   std::vector<std::string> fconts =
       yodecon::helpers::file::read_con_file("cuh2.con");
 
   auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
 
   auto positions = extract_positions(frame);
-auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
-xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
-for(size_t i = 0; i < atomNumbersVec.size(); ++i) {
+  auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
+  xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
+  for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
     atomTypes(i) = atomNumbersVec[i];
-}
-// std::array<size_t, 2> shape = {1, 3};
-xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1,3}));
-for(size_t i = 0; i < 3; ++i) {
+  }
+  // std::array<size_t, 2> shape = {1, 3};
+  xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1, 3}));
+  for (size_t i = 0; i < 3; ++i) {
     boxMatrix(0, i) = frame.boxl[i];
-}
+  }
 
   xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix);
 
   double energy = objFunc(positions);
-  auto grad =
-      objFunc.gradient(positions);
+  auto grad = objFunc.gradient(positions);
   // Reference:
   // Got energy -2.7114093289369636
   //  Forces:
@@ -276,8 +274,8 @@ for(size_t i = 0; i < 3; ++i) {
   // auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
   // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
 
-  // auto new_positions = peturb_positions(positions, atomTypes, cusdist, hdist);
-  // fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
+  // auto new_positions = peturb_positions(positions, atomTypes, cusdist,
+  // hdist); fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
   // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
 
   // fmt::print("Got energy {}\n", energy);
@@ -293,7 +291,8 @@ for(size_t i = 0; i < 3; ++i) {
                         double hh_dist, double cu_slab_dist) -> double {
     auto perturbed_positions =
         peturb_positions(positions, atomTypes, cu_slab_dist, hh_dist);
-    return objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) - ( -697.311695 );
+    return objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
+           (-697.311695);
   };
 
   xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60}, energyFunc,
