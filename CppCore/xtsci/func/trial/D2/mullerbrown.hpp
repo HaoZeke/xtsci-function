@@ -32,7 +32,7 @@ class MullerBrown : public ObjectiveFunction<ScalarType, 2> {
   // Second saddle point is at x = (-0.822, 0.624) with f(x) =
   // -40.66484530104902
 public:
-  MullerBrown(const xt::xtensor<bool, 1> &isFixed = {})
+  MullerBrown(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
       : ObjectiveFunction<ScalarType, 2>(isFixed) {
     this->minima = {
         {static_cast<ScalarType>(-0.558), static_cast<ScalarType>(1.442)},
