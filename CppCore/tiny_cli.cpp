@@ -45,9 +45,12 @@ int main(int argc, char *argv[]) {
 
   // clang-format off
   // Muller Brown
-  // xt::xarray<double> min1 = xt::row(mullerbrown.minima, 0); // {-0.558, 1.441}
-  // xt::xarray<double> min2 = xt::row(mullerbrown.minima, 1); // {0.623, 0.028}
-  // xt::xarray<double> min3 = xt::row(mullerbrown.minima, 2); // {-0.050, 0.466}
+  // xt::xarray<double> min1 = xt::row(mullerbrown.minima, 0);
+  // {-0.558, 1.441}
+  // xt::xarray<double> min2 = xt::row(mullerbrown.minima, 1);
+  // {0.623, 0.028}
+  // xt::xarray<double> min3 = xt::row(mullerbrown.minima, 2);
+  // {-0.050, 0.466}
   // fmt::print("Minima: {}, {}, {}\n", min1, min2, min3);
   // clang-format on
 
@@ -61,8 +64,10 @@ int main(int argc, char *argv[]) {
   // xt::row(himmelblau.minima, 2); // {-3.779310, -3.283186};
   // xt::xarray<double> min4 =
   // xt::row(himmelblau.minima, 3); // {3.584428, -1.848126};
-  // fmt::print("Himmelblau Minima:\n{}, {}\n{}, {}\n{}, {}\n{}, {}\n", min1,
-  //            himmelblau(min1), min2, himmelblau(min2), min3, himmelblau(min3),
+  // fmt::print("Himmelblau Minima:\n{}, {}\n{}, {}\n{},
+  // {}\n{}, {}\n", min1,
+  //            himmelblau(min1), min2, himmelblau(min2),
+  //            min3, himmelblau(min3),
   //            min4, himmelblau(min4));
   // clang-format on
 

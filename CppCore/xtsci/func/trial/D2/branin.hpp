@@ -18,7 +18,7 @@ class Branin : public ObjectiveFunction<ScalarType, 2> {
   // Global minimum are at x = (\pi, 12.275), (\pi, 2.275), (9.42478, 2.475)
   // with f(x) = 0.397887
 public:
-  Branin(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
+  explicit Branin(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
       : ObjectiveFunction<ScalarType, 2>(isFixed) {
     // Initialize the minima for the Branin function
     this->minima = {{std::numbers::pi_v<ScalarType>, 12.275},

@@ -15,7 +15,7 @@ template <typename ScalarType>
 class QuadraticFunction : public ObjectiveFunction<ScalarType, 1> {
   // Domain is R^n
   // Global minimum is at x = 0 with f(x) = 0
-  QuadraticFunction(const xt::xtensor<bool, 1> &isFixed = {})
+  explicit QuadraticFunction(const xt::xtensor<bool, 1> &isFixed = {})
       : ObjectiveFunction<ScalarType, 1>(isFixed) {
     this->minima = {{0.0}};
   }
