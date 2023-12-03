@@ -109,3 +109,4 @@ grid.npz
 /subprojects/**/
 /subprojects/range-v3.wrap
 /subprojects/fortcuh2.wrap
+/doc/apidocs/tags/
