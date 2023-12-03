@@ -12,17 +12,19 @@ namespace trial {
 namespace D2 {
 
 template <typename ScalarType = double>
-class Branin : public ObjectiveFunction<ScalarType> {
+class Branin : public ObjectiveFunction<ScalarType, 2> {
   // More details: https://www.sfu.ca/~ssurjano/branin.html
   // Domain is R^2
   // Global minimum are at x = (\pi, 12.275), (\pi, 2.275), (9.42478, 2.475)
   // with f(x) = 0.397887
 public:
-  Branin()
-      : ObjectiveFunction<ScalarType>(
-            /* minima */ {{std::numbers::pi_v<ScalarType>, 12.275},
-                          {std::numbers::pi_v<ScalarType>, 2.275},
-                          {9.42478, 2.475}}) {}
+  Branin(const xt::xtensor<bool, 1> &isFixed = {})
+      : ObjectiveFunction<ScalarType, 2>(isFixed) {
+    // Initialize the minima for the Branin function
+    this->minima = {{std::numbers::pi_v<ScalarType>, 12.275},
+                    {std::numbers::pi_v<ScalarType>, 2.275},
+                    {9.42478, 2.475}}; // Three minima
+  }
 
 private:
   static constexpr ScalarType a = 1;
