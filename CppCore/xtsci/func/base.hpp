@@ -33,6 +33,7 @@ public:
       : minima(min), saddles(sad) {}
   const xt::xarray<ScalarType> minima;
   const xt::xarray<ScalarType> saddles;
+  xt::xtensor<bool, 1> m_isFixed;
 
   virtual ~ObjectiveFunction() = default;
 
@@ -51,13 +52,39 @@ public:
   gradient(const xt::xarray<ScalarType> &x) const {
     ++m_counter.gradient_evals;
     ++m_counter.unique_func_grad;
-    return this->compute_gradient(x);
+    auto grad = this->compute_gradient(x);
+    if (!grad) {
+      return std::nullopt;
+    }
+
+    // Zero out gradients for fixed degrees of freedom
+    for (std::size_t idx = 0; idx < grad->size(); ++idx) {
+      if (m_isFixed.at(idx)) {
+        (*grad)[idx] = 0.0;
+      }
+    }
+
+    return grad;
   }
 
   virtual std::optional<xt::xarray<ScalarType>>
   hessian(const xt::xarray<ScalarType> &x) const {
     ++m_counter.hessian_evals;
-    return this->compute_hessian(x);
+    auto hess = this->compute_hessian(x);
+    if (!hess) {
+      return std::nullopt;
+    }
+
+    // Zero out Hessian rows and columns for fixed degrees of freedom
+    for (size_t idx = 0; idx < hess->shape()[0]; ++idx) {
+      for (size_t jdx = 0; jdx < hess->shape()[1]; ++jdx) {
+        if (m_isFixed.at(idx) || m_isFixed.at(jdx)) {
+          (*hess)(idx, jdx) = 0;
+        }
+      }
+    }
+
+    return hess;
   }
 
   ScalarType
