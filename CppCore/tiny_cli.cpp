@@ -259,8 +259,10 @@ int main(int argc, char *argv[]) {
   for (size_t i = 0; i < 3; ++i) {
     boxMatrix(0, i) = frame.boxl[i];
   }
+  xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
 
-  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix);
+  fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
+  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix, booltypes);
 
   double energy = objFunc(positions);
   auto grad = objFunc.gradient(positions);
@@ -271,15 +273,15 @@ int main(int argc, char *argv[]) {
   //     -1.49194  0.000392731 -0.000182606
   //     -4.91186 -1.39442e-05    4.799e-06
   //      4.91186  1.39442e-05   -4.799e-06%
-  // auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
-  // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+  auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
+  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
 
   // auto new_positions = peturb_positions(positions, atomTypes, cusdist,
   // hdist); fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
   // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
 
-  // fmt::print("Got energy {}\n", energy);
-  // fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  fmt::print("Got energy {}\n", energy);
+  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
   // double new_energy =
   //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
   // auto new_grad =
@@ -287,16 +289,18 @@ int main(int argc, char *argv[]) {
   // fmt::print("Got new energy {}\n", new_energy);
   // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
 
-  auto energyFunc = [&objFunc, &positions, &atomTypes](
-                        double hh_dist, double cu_slab_dist) -> double {
-    auto perturbed_positions =
-        peturb_positions(positions, atomTypes, cu_slab_dist, hh_dist);
-    return objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
-           (-697.311695);
-  };
+  // auto energyFunc = [&objFunc, &positions, &atomTypes](
+  //                       double hh_dist, double cu_slab_dist) -> double {
+  //   auto perturbed_positions =
+  //       peturb_positions(positions, atomTypes, cu_slab_dist, hh_dist);
+  //   return
+  //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
+  //          (-697.311695);
+  // };
 
-  xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60}, energyFunc,
-                                   "cuh2_grid.npz");
+  // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
+  // energyFunc,
+  //                                  "cuh2_grid.npz");
 
   return EXIT_SUCCESS;
 }
