@@ -10,6 +10,9 @@ Trial functions implemented:
 - [x] Eggholder's function
 - [x] Muller-Brown function
 
+** Features
+- Allows masks for fixing degrees of freedom
+
 ** Usage
 Until bindings are ready, ~tiny_cli.cpp~ can be edited and run with the ~python~ scripts
 to get a visual for the trial functions.

@@ -9,12 +9,17 @@
 namespace xts {
 namespace func {
 namespace trial {
-namespace D2 {
+namespace D1 {
 
 template <typename ScalarType>
-class QuadraticFunction : public ObjectiveFunction<ScalarType> {
+class QuadraticFunction : public ObjectiveFunction<ScalarType, 1> {
   // Domain is R^n
   // Global minimum is at x = 0 with f(x) = 0
+  QuadraticFunction(const xt::xtensor<bool, 1> &isFixed = {})
+      : ObjectiveFunction<ScalarType, 1>(isFixed) {
+    this->minima = {{0.0}};
+  }
+
 private:
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     return xt::linalg::dot(x, x)(0); // x^T x
@@ -33,7 +38,7 @@ private:
   }
 };
 
-} // namespace D2
+} // namespace D1
 } // namespace trial
 } // namespace func
 } // namespace xts
