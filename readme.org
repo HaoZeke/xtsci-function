@@ -5,10 +5,10 @@ and saddle search methods. The repository also includes standard test functions
 from statistics and chemistry.
 
 Trial functions implemented:
-- [x] Rosenbrock function
-- [x] Himmelblau's function
-- [x] Eggholder's function
-- [x] Muller-Brown function
+- [X] Rosenbrock function
+- [X] Himmelblau's function
+- [X] Eggholder's function
+- [X] Muller-Brown function
 
 ** Features
 - Allows masks for fixing degrees of freedom
