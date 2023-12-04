@@ -22,12 +22,18 @@ struct EvaluationCounter {
   size_t function_evals = 0;
   size_t gradient_evals = 0;
   size_t hessian_evals = 0;
-  size_t unique_func_grad = 0;
+  size_t unique_func_grad_hess = 0;
 };
 
 template <typename ScalarType = double> class ObjectiveFunction {
-private:
+private: // Variables
   size_t m_dims;
+  mutable xt::xarray<ScalarType> m_lastX;
+  mutable ScalarType m_lastFunctionValue;
+  mutable std::optional<xt::xarray<ScalarType>> m_lastGradient;
+  mutable std::optional<xt::xarray<ScalarType>> m_lastHessian;
+  mutable bool m_isCacheValid = false;
+  mutable EvaluationCounter m_counter;
 
 public: // Variables
         // TODO(rg): Better sanity checks, make m_isFixed private and check
@@ -62,52 +68,41 @@ public: // Constructors and destructor
 public: // Functions and Operators
   ScalarType operator()(const xt::xarray<ScalarType> &x) const {
     ++m_counter.function_evals;
-    ++m_counter.unique_func_grad;
-    return this->compute(x);
-  }
-
-  ScalarType operator()(ScalarType x_val, ScalarType y_val) const {
-    xt::xarray<ScalarType> input = {x_val, y_val};
-    return this->operator()(input);
+    if (!(m_isCacheValid && xt::all(xt::equal(x, m_lastX)))) {
+      m_lastX = x;
+      m_lastFunctionValue = this->compute(x);
+      m_isCacheValid = true;
+      ++m_counter.unique_func_grad_hess;
+    }
+    return m_lastFunctionValue;
   }
 
   virtual std::optional<xt::xarray<ScalarType>>
   gradient(const xt::xarray<ScalarType> &x) const {
     ++m_counter.gradient_evals;
-    ++m_counter.unique_func_grad;
-    auto grad = this->compute_gradient(x);
-    if (!grad) {
-      return std::nullopt;
+    if (!m_isCacheValid || !m_lastGradient.has_value() ||
+        !xt::allclose(x, m_lastX)) {
+      m_lastX = x;
+      ++m_counter.unique_func_grad_hess;
+      m_lastGradient = this->compute_gradient(x);
+      m_isCacheValid = true;
+      applyFixedMaskToGradient(m_lastGradient);
     }
-
-    // Zero out gradients for fixed degrees of freedom
-    for (std::size_t idx = 0; idx < grad->size(); ++idx) {
-      if (m_isFixed.at(idx)) {
-        (*grad)[idx] = 0.0;
-      }
-    }
-
-    return grad;
+    return m_lastGradient;
   }
 
   virtual std::optional<xt::xarray<ScalarType>>
   hessian(const xt::xarray<ScalarType> &x) const {
     ++m_counter.hessian_evals;
-    auto hess = this->compute_hessian(x);
-    if (!hess) {
-      return std::nullopt;
+    if (!m_isCacheValid || !m_lastHessian.has_value() ||
+        !xt::allclose(x, m_lastX)) {
+      m_lastX = x;
+      ++m_counter.unique_func_grad_hess;
+      m_lastHessian = this->compute_hessian(x);
+      m_isCacheValid = true;
+      applyFixedMaskToHessian(m_lastHessian);
     }
-
-    // Zero out Hessian rows and columns for fixed degrees of freedom
-    for (size_t idx = 0; idx < hess->shape()[0]; ++idx) {
-      for (size_t jdx = 0; jdx < hess->shape()[1]; ++jdx) {
-        if (m_isFixed.at(idx) || m_isFixed.at(jdx)) {
-          (*hess)(idx, jdx) = 0;
-        }
-      }
-    }
-
-    return hess;
+    return m_lastHessian;
   }
 
   ScalarType
@@ -135,8 +130,6 @@ public: // Functions and Operators
   EvaluationCounter evaluation_counts() const { return m_counter; }
 
 private:
-  mutable EvaluationCounter m_counter;
-
   virtual ScalarType compute(const xt::xarray<ScalarType> &x) const = 0;
 
   virtual std::optional<xt::xarray<ScalarType>>
@@ -147,6 +140,31 @@ private:
   virtual std::optional<xt::xarray<ScalarType>>
   compute_hessian(const xt::xarray<ScalarType> &) const {
     return std::nullopt;
+  }
+  void
+  applyFixedMaskToGradient(std::optional<xt::xarray<ScalarType>> &grad) const {
+    if (!grad) {
+      return;
+    }
+    for (std::size_t idx = 0; idx < grad->size(); ++idx) {
+      if (m_isFixed.at(idx)) {
+        (*grad)[idx] = 0.0;
+      }
+    }
+  }
+
+  void
+  applyFixedMaskToHessian(std::optional<xt::xarray<ScalarType>> &hess) const {
+    if (!hess) {
+      return;
+    }
+    for (size_t idx = 0; idx < hess->shape()[0]; ++idx) {
+      for (size_t jdx = 0; jdx < hess->shape()[1]; ++jdx) {
+        if (m_isFixed.at(idx) || m_isFixed.at(jdx)) {
+          (*hess)(idx, jdx) = 0;
+        }
+      }
+    }
   }
 };
 
