@@ -19,7 +19,7 @@ namespace trial {
 namespace D2 {
 
 template <typename ScalarType = double>
-class MullerBrown : public ObjectiveFunction<ScalarType, 2> {
+class MullerBrown : public ObjectiveFunction<ScalarType> {
   // As seen in [KMLB]
   // TODO(rgoswami): Convert to references
   // From: https://arxiv.org/pdf/cond-mat/0108310.pdf
@@ -34,7 +34,7 @@ class MullerBrown : public ObjectiveFunction<ScalarType, 2> {
 public:
   explicit MullerBrown(
       const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
-      : ObjectiveFunction<ScalarType, 2>(isFixed) {
+      : ObjectiveFunction<ScalarType>(2, isFixed) {
     this->minima = {
         {static_cast<ScalarType>(-0.558), static_cast<ScalarType>(1.442)},
         {static_cast<ScalarType>(0.623), static_cast<ScalarType>(0.028)},

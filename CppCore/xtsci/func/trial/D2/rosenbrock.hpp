@@ -18,14 +18,14 @@ namespace trial {
 namespace D2 {
 
 template <typename ScalarType = double>
-class Rosenbrock : public ObjectiveFunction<ScalarType, 2> {
+class Rosenbrock : public ObjectiveFunction<ScalarType> {
   // More details: https://www.sfu.ca/~ssurjano/rosen.html
   // Domain is R^2
   // Global minimum is at x = (1, 1) with f(x) = 0
 public:
   explicit Rosenbrock(
       const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
-      : ObjectiveFunction<ScalarType, 2>(isFixed) {
+      : ObjectiveFunction<ScalarType>(2, isFixed) {
     this->minima = {{1.0, 1.0}};
   }
 

@@ -11,6 +11,8 @@
 
 #include "xtensor-fmt/misc.hpp"
 #include "xtensor/xarray.hpp"
+#include "xtensor/xlayout.hpp"
+#include "xtensor/xshape.hpp"
 #include "xtensor/xvectorize.hpp"
 
 #include "xtsci/func/plot_aid.hpp"
@@ -19,6 +21,139 @@
 #include "xtsci/func/trial/D2/himmelblau.hpp"
 #include "xtsci/func/trial/D2/mullerbrown.hpp"
 #include "xtsci/func/trial/D2/rosenbrock.hpp"
+
+#include "rgpot/CuH2/CuH2Pot.hpp"
+#include "xtsci/pot/base.hpp"
+
+#include "include/BaseTypes.hpp"
+#include "include/FormatConstants.hpp"
+#include "include/ReadCon.hpp"
+#include "include/helpers/StringHelpers.hpp"
+
+xt::xtensor<double, 2>
+extract_positions(const yodecon::types::ConFrameVec &frame) {
+  size_t n_atoms = frame.x.size();
+  std::array<size_t, 2> shape = {static_cast<size_t>(n_atoms), 3};
+
+  xt::xtensor<double, 2> positions = xt::empty<double>(shape);
+  for (size_t i = 0; i < n_atoms; ++i) {
+    positions(i, 0) = frame.x[i];
+    positions(i, 1) = frame.y[i];
+    positions(i, 2) = frame.z[i];
+  }
+
+  return positions;
+}
+
+xt::xtensor<double, 1> normalize(const xt::xtensor<double, 1> &vec) {
+  double norm = xt::linalg::norm(vec);
+  if (norm == 0.0) {
+    throw std::runtime_error("Cannot normalize a zero vector");
+  }
+  return vec / norm;
+}
+
+xt::xtensor<double, 2>
+peturb_positions(const xt::xtensor<double, 2> &base_positions,
+                 const xt::xtensor<int, 1> &atmNumVec, double hcu_dist,
+                 double hh_dist) {
+  xt::xtensor<double, 2> positions = base_positions;
+  std::vector<size_t> hIndices, cuIndices;
+
+  for (size_t i = 0; i < atmNumVec.size(); ++i) {
+    if (atmNumVec(i) == 1) { // Hydrogen atom
+      hIndices.push_back(i);
+    } else if (atmNumVec(i) == 29) { // Copper atom
+      cuIndices.push_back(i);
+    } else {
+      throw std::runtime_error("Unexpected atomic number");
+    }
+  }
+
+  if (hIndices.size() != 2) {
+    throw std::runtime_error("Expected exactly two hydrogen atoms");
+  }
+
+  // Compute the midpoint of the hydrogens
+  auto hMidpoint =
+      (xt::row(positions, hIndices[0]) + xt::row(positions, hIndices[1])) / 2;
+
+  // TODO(rg): This is buggy in cuh2vizR!! (maybe)
+  // Compute the HH direction
+  xt::xtensor<double, 1> hh_direction;
+  size_t h1_idx, h2_idx;
+  if (positions(hIndices[0], 0) < positions(hIndices[1], 0)) {
+    hh_direction = normalize(xt::row(positions, hIndices[1]) -
+                             xt::row(positions, hIndices[0]));
+    h1_idx = hIndices[0];
+    h2_idx = hIndices[1];
+  } else {
+    hh_direction = normalize(xt::row(positions, hIndices[0]) -
+                             xt::row(positions, hIndices[1]));
+    h1_idx = hIndices[1];
+    h2_idx = hIndices[0];
+  }
+
+  // Set the new position of the hydrogens using the recorded indices
+  xt::row(positions, h1_idx) = hMidpoint - (0.5 * hh_dist) * hh_direction;
+  xt::row(positions, h2_idx) = hMidpoint + (0.5 * hh_dist) * hh_direction;
+
+  // Find the z-coordinate of the topmost Cu layer
+  double maxCuZ = std::numeric_limits<double>::lowest();
+  for (auto cuIndex : cuIndices) {
+    maxCuZ = std::max(maxCuZ, positions(cuIndex, 2));
+  }
+
+  // Compute the new z-coordinate for the H atoms
+  double new_z = maxCuZ + hcu_dist;
+
+  // Update the z-coordinates of the H atoms
+  for (auto hIndex : hIndices) {
+    positions(hIndex, 2) = new_z;
+  }
+
+  return positions;
+}
+
+std::pair<double, double>
+calculateDistances(const xt::xtensor<double, 2> &positions,
+                   const xt::xtensor<int, 1> &atmNumVec) {
+  std::vector<size_t> hIndices, cuIndices;
+  for (size_t i = 0; i < atmNumVec.size(); ++i) {
+    if (atmNumVec(i) == 1) { // Hydrogen atom
+      hIndices.push_back(i);
+    } else if (atmNumVec(i) == 29) { // Copper atom
+      cuIndices.push_back(i);
+    } else {
+      throw std::runtime_error("Unexpected atomic number");
+    }
+  }
+
+  if (hIndices.size() != 2) {
+    throw std::runtime_error("Expected exactly two hydrogen atoms");
+  }
+
+  // Calculate the distance between Hydrogen atoms
+  double hDistance =
+      xt::linalg::norm(xt::view(positions, hIndices[0], xt::all()) -
+                       xt::view(positions, hIndices[1], xt::all()));
+
+  // Calculate the midpoint of Hydrogen atoms
+  xt::xtensor<double, 1> hMidpoint =
+      (xt::view(positions, hIndices[0], xt::all()) +
+       xt::view(positions, hIndices[1], xt::all())) /
+      2.0;
+
+  // Find the z-coordinate of the topmost Cu layer
+  double maxCuZ = std::numeric_limits<double>::lowest();
+  for (size_t cuIndex : cuIndices) {
+    maxCuZ = std::max(maxCuZ, positions(cuIndex, 2));
+  }
+
+  double cuSlabDist = positions(hIndices[0], 2) - maxCuZ;
+
+  return std::make_pair(hDistance, cuSlabDist);
+}
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
@@ -92,5 +227,80 @@ int main(int argc, char *argv[]) {
       "Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
       branin_fixed(x), *branin_fixed.gradient(x), branin_fixed.m_isFixed[0],
       branin_fixed.m_isFixed[1]);
+
+  auto cuh2pot = std::make_shared<rgpot::CuH2Pot>();
+  // xt::xtensor<int, 1> atomTypes{{29, 29, 1, 1}};
+  // xt::xtensor<double, 2> boxMatrix{
+  //     {15, 0, 0},
+  //     {0, 20, 0},
+  //     {0, 0, 30},
+  // };
+
+  // xt::xtensor<double, 2> positions{
+  //     {0.63940268750835, 0.90484742551374, 6.97516498544584}, // Cu
+  //     {3.19652040936288, 0.90417430354811, 6.97547796369474}, // Cu
+  //     {8.98363230369760, 9.94703496017833, 7.83556854923689}, // H
+  //     {7.64080177576300, 9.94703114803832, 7.83556986121272}, // H
+  // };
+
+  std::vector<std::string> fconts =
+      yodecon::helpers::file::read_con_file("cuh2.con");
+
+  auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
+
+  auto positions = extract_positions(frame);
+  auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
+  xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
+  for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
+    atomTypes(i) = atomNumbersVec[i];
+  }
+  // std::array<size_t, 2> shape = {1, 3};
+  xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1, 3}));
+  for (size_t i = 0; i < 3; ++i) {
+    boxMatrix(0, i) = frame.boxl[i];
+  }
+  xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
+
+  fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
+  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix, booltypes);
+
+  double energy = objFunc(positions);
+  auto grad = objFunc.gradient(positions);
+  // Reference:
+  // Got energy -2.7114093289369636
+  //  Forces:
+  //      1.49194 -0.000392731  0.000182606
+  //     -1.49194  0.000392731 -0.000182606
+  //     -4.91186 -1.39442e-05    4.799e-06
+  //      4.91186  1.39442e-05   -4.799e-06%
+  auto [hdist, cusdist] = calculateDistances(positions, atomTypes);
+  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+
+  // auto new_positions = peturb_positions(positions, atomTypes, cusdist,
+  // hdist); fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
+  // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
+
+  fmt::print("Got energy {}\n", energy);
+  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  // double new_energy =
+  //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // auto new_grad =
+  //     objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // fmt::print("Got new energy {}\n", new_energy);
+  // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
+
+  // auto energyFunc = [&objFunc, &positions, &atomTypes](
+  //                       double hh_dist, double cu_slab_dist) -> double {
+  //   auto perturbed_positions =
+  //       peturb_positions(positions, atomTypes, cu_slab_dist, hh_dist);
+  //   return
+  //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
+  //          (-697.311695);
+  // };
+
+  // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
+  // energyFunc,
+  //                                  "cuh2_grid.npz");
+
   return EXIT_SUCCESS;
 }

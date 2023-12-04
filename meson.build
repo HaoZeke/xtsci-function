@@ -60,6 +60,13 @@ xtensor_fmt_proj = subproject('xtensor-fmt')
 xtensor_fmt_dep = xtensor_fmt_proj.get_variable('xtensor_fmt_dep')
 _deps += [xtensor_fmt_dep]
 
+potlib_proj = subproject('potlib')
+potlib_dep = potlib_proj.get_variable('potlib_dep')
+_deps += [potlib_dep]
+
+readcon_proj = subproject('readcon')
+readcon_dep = readcon_proj.get_variable('readcon_dep')
+_deps += [readcon_dep]
 # --------------------- Projects
 subdir('CppCore')
 _incdirs += [ 'CppCore' ]

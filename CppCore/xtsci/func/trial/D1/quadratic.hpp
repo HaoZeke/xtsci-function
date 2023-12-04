@@ -12,11 +12,11 @@ namespace trial {
 namespace D1 {
 
 template <typename ScalarType>
-class QuadraticFunction : public ObjectiveFunction<ScalarType, 1> {
+class QuadraticFunction : public ObjectiveFunction<ScalarType> {
   // Domain is R^n
   // Global minimum is at x = 0 with f(x) = 0
   explicit QuadraticFunction(const xt::xtensor<bool, 1> &isFixed = {})
-      : ObjectiveFunction<ScalarType, 1>(isFixed) {
+      : ObjectiveFunction<ScalarType>(1, isFixed) {
     this->minima = {{0.0}};
   }
 

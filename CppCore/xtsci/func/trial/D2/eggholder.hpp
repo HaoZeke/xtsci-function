@@ -18,12 +18,12 @@ namespace trial {
 namespace D2 {
 
 template <typename ScalarType = double>
-class Eggholder : public ObjectiveFunction<ScalarType, 2> {
+class Eggholder : public ObjectiveFunction<ScalarType> {
   // Domain is -512 to 512
   // Minimum at (512, 404.2319) with value -959.6407
 public:
   explicit Eggholder(const xt::xtensor<bool, 1> &isFixed = xt::zeros<bool>({2}))
-      : ObjectiveFunction<ScalarType, 2>(isFixed) {
+      : ObjectiveFunction<ScalarType>(2, isFixed) {
     this->minima = {{512, 404.2319}};
   }
 
