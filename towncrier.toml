@@ -1,5 +1,5 @@
 [tool.towncrier]
-directory = "docs/changelog.d"
+directory = "doc/newsfragments"
 filename = "CHANGELOG.md"
 start_string = "<!-- towncrier release notes start -->\n"
 underlines = ["", "", ""]
