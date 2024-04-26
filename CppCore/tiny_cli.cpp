@@ -138,47 +138,78 @@ int main(int argc, char *argv[]) {
   xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
 
   fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
-  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix, booltypes);
+  xts::pot::XTPot<double> objFunc(cuh2pot, positions, atomTypes, boxMatrix,
+                                  booltypes);
+  xt::xarray<double> test_x{0, 3, 4, 3, 2, 1};
+  fmt::print("\nPutting in {}\n", fmt::streamed(test_x));
 
-  double energy = objFunc(positions);
-  auto grad = objFunc.gradient(positions);
-  // Reference:
-  // Got energy -2.7114093289369636
-  //  Forces:
-  //      1.49194 -0.000392731  0.000182606
-  //     -1.49194  0.000392731 -0.000182606
-  //     -4.91186 -1.39442e-05    4.799e-06
-  //      4.91186  1.39442e-05   -4.799e-06%
-  auto [hdist, cusdist] = rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
-  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+  // fmt::print("Reconstructed {}",
+  //            fmt::streamed(objFunc.reconstruct_full(test_x)));
+    // xt::xarray<double> data = {{1.0, 2.0, 3.0},
+    //                            {4.0, 5.0, 6.0},
+    //                            {1.0, 2.0, 8.0}};
+    // xt::xarray<bool> mask = {{true, true, true},
+    //                          {false, false, false},
+    //                          {false, false, false}};
 
-  // auto new_positions = rgpot::cuh2::utils::xts::perturb_positions(positions,
-  // atomTypes, cusdist, hdist); fmt::print("New positions:\n{}\n",
-  // fmt::streamed(new_positions)); fmt::print("Old positions:\n{}\n",
-  // fmt::streamed(positions));
+    // // Updates for free positions
+    // xt::xarray<double> free_updates = {{0.1, 0.0, 0.2},
+    //                                    {5, 3, 2}};
 
-  fmt::print("Got energy {}\n", energy);
-  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
-  // double new_energy =
-  //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
-  // auto new_grad =
-  //     objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
-  // fmt::print("Got new energy {}\n", new_energy);
-  // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
+    // // Flatten data and mask
+    // auto flat_data = xt::flatten(data);
+    // auto flat_mask = xt::flatten(mask);
 
-  // auto energyFunc = [&objFunc, &positions, &atomTypes](
-  //                       double hh_dist, double cu_slab_dist) -> double {
-  //   auto perturbed_positions =
-  //       rgpot::cuh2::utils::xts::perturb_positions(positions, atomTypes,
-  //       cu_slab_dist, hh_dist);
-  //   return
-  //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
-  //          (-697.311695);
-  // };
+    // // Get the indices where mask is false
+    // auto indices = xt::from_indices(xt::nonzero(xt::equal(flat_mask, false)));
 
-  // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
-  // energyFunc,
-  //                                  "cuh2_grid.npz");
+    // // Apply updates using indices
+    // xt::index_view(flat_data, indices) = xt::flatten(free_updates);
+
+    // std::cout << "Updated data:" << std::endl;
+    // std::cout << data << std::endl;
+
+  // double energy = objFunc(positions);
+  // auto grad = objFunc.gradient(positions);
+  // // Reference:
+  // // Got energy -2.7114093289369636
+  // //  Forces:
+  // //      1.49194 -0.000392731  0.000182606
+  // //     -1.49194  0.000392731 -0.000182606
+  // //     -4.91186 -1.39442e-05    4.799e-06
+  // //      4.91186  1.39442e-05   -4.799e-06%
+  // auto [hdist, cusdist] =
+  //     rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
+  // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+
+  // // auto new_positions =
+  // rgpot::cuh2::utils::xts::perturb_positions(positions,
+  // // atomTypes, cusdist, hdist); fmt::print("New positions:\n{}\n",
+  // // fmt::streamed(new_positions)); fmt::print("Old positions:\n{}\n",
+  // // fmt::streamed(positions));
+
+  // fmt::print("Got energy {}\n", energy);
+  // fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  // // double new_energy =
+  // //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // // auto new_grad =
+  // // objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // // fmt::print("Got new energy {}\n", new_energy);
+  // // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
+
+  // // auto energyFunc = [&objFunc, &positions, &atomTypes](
+  // //                       double hh_dist, double cu_slab_dist) -> double {
+  // //   auto perturbed_positions =
+  // //       rgpot::cuh2::utils::xts::perturb_positions(positions, atomTypes,
+  // //       cu_slab_dist, hh_dist);
+  // //   return
+  // //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
+  // //          (-697.311695);
+  // // };
+
+  // // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
+  // // energyFunc,
+  // //                                  "cuh2_grid.npz");
 
   return EXIT_SUCCESS;
 }
