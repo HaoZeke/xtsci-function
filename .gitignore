@@ -1,9 +1,10 @@
 # Additional
 .pixi
 .compile_commands.json
-doc/apidocs/doxyYoda
-doc/build
-!doc/changelog.d
+docs/apidocs/doxyYoda
+docs/build
+!docs/build/.gitkeep
+!docs/newsfragments
 # Created by https://www.toptal.com/developers/gitignore/api/c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++
 
