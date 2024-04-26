@@ -41,13 +41,12 @@ public:
   }
 
 protected: // Useful to test the damn thing
-  xt::xtensor<double, 2>
-  reconstruct_full(const xt::xarray<ScalarType> &free_x) {
+  xt::xtensor<ScalarType, 2>
+  reconstruct_full(const xt::xarray<ScalarType> &free_x) const {
     std::array<std::size_t, 2> shape = {m_atomTypes.size(), 3};
     xt::xtensor<double, 2> allpos = xt::reshape_view(m_basepos, shape);
-    xt::xarray<bool> free_mask = xt::reshape_view(!this->m_isFixed, shape);
     // Flatten all structures for simpler indexing
-    auto flat_indices = xt::from_indices(xt::nonzero(xt::flatten(free_mask)));
+    auto flat_indices = xt::from_indices(xt::nonzero(m_free));
     // Check the size of free_x to match the flat indices count
     if (flat_indices.size() != free_x.size()) {
       throw std::runtime_error(
@@ -62,6 +61,7 @@ private:
   std::vector<int> m_atomTypes;
   std::array<std::array<double, 3>, 3> m_box;
   const xt::xtensor<bool, 1> m_free{!this->m_isFixed};
+  xt::xtensor<double, 2> m_basepos;
 
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
