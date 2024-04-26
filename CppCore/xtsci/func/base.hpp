@@ -19,9 +19,9 @@ namespace xts {
 namespace func {
 
 struct EvaluationCounter {
-  size_t function_evals = 0;
-  size_t gradient_evals = 0;
-  size_t hessian_evals = 0;
+  size_t function_evals   = 0;
+  size_t gradient_evals   = 0;
+  size_t hessian_evals    = 0;
   size_t unique_func_grad = 0;
 };
 
@@ -43,7 +43,7 @@ public: // Constructors and destructor
       : m_dims(dims), m_isFixed(xt::zeros<bool>({m_dims})) {
     auto shape = std::vector<size_t>{
         0, m_dims}; // Create an empty tensor with 0 rows and m_dims columns
-    minima = xt::empty<ScalarType>(shape);
+    minima  = xt::empty<ScalarType>(shape);
     saddles = xt::empty<ScalarType>(shape);
   }
 
@@ -55,8 +55,8 @@ public: // Constructors and destructor
           "Size of isFixed mask does not match the problem dimensionality.");
     }
     auto shape = std::vector<size_t>{0, m_dims};
-    minima = xt::empty<ScalarType>(shape);
-    saddles = xt::empty<ScalarType>(shape);
+    minima     = xt::empty<ScalarType>(shape);
+    saddles    = xt::empty<ScalarType>(shape);
   }
 
 public: // Functions and Operators
@@ -71,8 +71,8 @@ public: // Functions and Operators
     return this->operator()(input);
   }
 
-  virtual std::optional<xt::xarray<ScalarType>>
-  gradient(const xt::xarray<ScalarType> &x) const {
+  virtual std::optional<xt::xarray<ScalarType>> gradient(
+      const xt::xarray<ScalarType> &x, const bool zero_fixed = false) const {
     ++m_counter.gradient_evals;
     ++m_counter.unique_func_grad;
     auto grad = this->compute_gradient(x);
@@ -80,29 +80,37 @@ public: // Functions and Operators
       return std::nullopt;
     }
 
-    // Zero out gradients for fixed degrees of freedom
-    for (std::size_t idx = 0; idx < grad->size(); ++idx) {
-      if (m_isFixed.at(idx)) {
-        (*grad)[idx] = 0.0;
+    // TODO(rg): Rethink this, zero_fixed is only there because the behavior
+    // with XTPot is wrong since the degrees of freedom are omitted there
+    // already Zero out gradients for fixed degrees of freedom
+    if (zero_fixed) {
+      for (std::size_t idx = 0; idx < grad->size(); ++idx) {
+        if (m_isFixed.at(idx)) {
+          (*grad)[idx] = 0.0;
+        }
       }
     }
 
     return grad;
   }
 
-  virtual std::optional<xt::xarray<ScalarType>>
-  hessian(const xt::xarray<ScalarType> &x) const {
+  virtual std::optional<xt::xarray<ScalarType>> hessian(
+      const xt::xarray<ScalarType> &x, const bool zero_fixed = false) const {
     ++m_counter.hessian_evals;
     auto hess = this->compute_hessian(x);
     if (!hess) {
       return std::nullopt;
     }
 
+    // TODO(rg): Rethink this, see the comment for gradient
     // Zero out Hessian rows and columns for fixed degrees of freedom
-    for (size_t idx = 0; idx < hess->shape()[0]; ++idx) {
-      for (size_t jdx = 0; jdx < hess->shape()[1]; ++jdx) {
-        if (m_isFixed.at(idx) || m_isFixed.at(jdx)) {
-          (*hess)(idx, jdx) = 0;
+
+    if (zero_fixed) {
+      for (size_t idx = 0; idx < hess->shape()[0]; ++idx) {
+        for (size_t jdx = 0; jdx < hess->shape()[1]; ++jdx) {
+          if (m_isFixed.at(idx) || m_isFixed.at(jdx)) {
+            (*hess)(idx, jdx) = 0;
+          }
         }
       }
     }
@@ -110,9 +118,9 @@ public: // Functions and Operators
     return hess;
   }
 
-  ScalarType
-  directional_derivative(const xt::xarray<ScalarType> &x,
-                         const xt::xarray<ScalarType> &direction) const {
+  ScalarType directional_derivative(
+      const xt::xarray<ScalarType> &x,
+      const xt::xarray<ScalarType> &direction) const {
     auto grad_opt = gradient(x);
     if (!grad_opt) {
       throw std::runtime_error(
@@ -121,12 +129,11 @@ public: // Functions and Operators
     return xt::linalg::dot(*grad_opt, direction)();
   }
 
-  std::pair<xt::xarray<ScalarType>, xt::xarray<ScalarType>>
-  grad_components(const xt::xarray<ScalarType> &xpt,
-                  xt::xarray<ScalarType> &direction,
-                  bool is_normalized = false) const {
+  std::pair<xt::xarray<ScalarType>, xt::xarray<ScalarType>> grad_components(
+      const xt::xarray<ScalarType> &xpt, xt::xarray<ScalarType> &direction,
+      bool is_normalized = false) const {
     helpers::ensure_normalized(direction, is_normalized);
-    auto grad = this->gradient(xpt).value();
+    auto grad                = this->gradient(xpt).value();
     auto parallel_projection = xt::linalg::dot(grad, direction) * direction;
     auto perpendicular_projection = grad - parallel_projection;
     return {parallel_projection, perpendicular_projection};
