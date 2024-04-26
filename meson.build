@@ -60,7 +60,8 @@ xtensor_fmt_proj = subproject('xtensor-fmt')
 xtensor_fmt_dep = xtensor_fmt_proj.get_variable('xtensor_fmt_dep')
 _deps += [xtensor_fmt_dep]
 
-potlib_proj = subproject('potlib')
+potlib_proj = subproject('potlib',
+                        default_options: ['with_xtensor=true'])
 potlib_dep = potlib_proj.get_variable('potlib_dep')
 _deps += [potlib_dep]
 
