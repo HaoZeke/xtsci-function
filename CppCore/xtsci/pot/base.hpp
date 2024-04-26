@@ -21,6 +21,7 @@ namespace pot {
 
 template <typename ScalarType = double>
 class XTPot : public func::ObjectiveFunction<ScalarType> {
+  friend class TestXTPot; // Make a test class a friend
 public:
   XTPot(std::shared_ptr<rgpot::Potential> pot,
         const xt::xtensor<ScalarType, 2> &base_pos,
