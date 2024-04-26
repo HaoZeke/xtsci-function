@@ -36,6 +36,10 @@ public:
 
   virtual ~XTPot() = default;
 
+  xt::xtensor<ScalarType, 1> get_free(const xt::xarray<ScalarType> &pos) const {
+    return xt::filter(xt::flatten(pos), m_free);
+  }
+
 protected: // Useful to test the damn thing
   xt::xtensor<double, 2>
   reconstruct_full(const xt::xarray<ScalarType> &free_x) {
@@ -57,6 +61,7 @@ private:
   std::shared_ptr<rgpot::Potential> m_pot;
   std::vector<int> m_atomTypes;
   std::array<std::array<double, 3>, 3> m_box;
+  const xt::xtensor<bool, 1> m_free{!this->m_isFixed};
 
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     xt::xtensor<double, 2> positions = this->reshape_x_to_positions(x);
