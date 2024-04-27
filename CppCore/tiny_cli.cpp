@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
   fmt::print(
       "Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
-      branin_fixed(x), *branin_fixed.gradient(x), branin_fixed.m_isFixed[0],
+      branin_fixed(x), *branin_fixed.gradient(x, true), branin_fixed.m_isFixed[0],
       branin_fixed.m_isFixed[1]);
 
   auto cuh2pot = std::make_shared<rgpot::CuH2Pot>();
