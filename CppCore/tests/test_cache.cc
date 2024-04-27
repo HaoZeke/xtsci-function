@@ -4,7 +4,7 @@
 #include <catch2/catch_all.hpp>
 
 TEST_CASE("ObjectiveFunction Caching Mechanism", "[ObjectiveFunctionCache]") {
-  using Scalar = double;
+  using Scalar         = double;
   xt::xarray<Scalar> x = {0.3, 2.0}; // Arbitrary test point
 
   SECTION("Function Caching") {

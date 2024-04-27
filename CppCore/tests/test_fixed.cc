@@ -14,8 +14,9 @@ TEST_CASE("Branin Function with Fixed Degrees of Freedom", "[BraninFixed]") {
   xt::xarray<Scalar> x = {1.0, 1.0};
 
   SECTION("Gradient with Fixed Degree of Freedom") {
-    xt::xarray<Scalar> grad_fixed    = branin_fixed.gradient(x, true).value();
-    xt::xarray<Scalar> grad_standard = branin_standard.gradient(x, true).value();
+    xt::xarray<Scalar> grad_fixed = branin_fixed.gradient(x, true).value();
+    xt::xarray<Scalar> grad_standard
+        = branin_standard.gradient(x, true).value();
 
     REQUIRE_THAT(
         grad_fixed(0), Catch::Matchers::WithinAbs(
@@ -54,8 +55,9 @@ TEST_CASE(
   xt::xarray<Scalar> x = {1.0, 1.0}; // Test point
 
   SECTION("Gradient with Fixed Degree of Freedom") {
-    xt::xarray<Scalar> grad_fixed    = rosenbrock_fixed.gradient(x, true).value();
-    xt::xarray<Scalar> grad_standard = rosenbrock_standard.gradient(x, true).value();
+    xt::xarray<Scalar> grad_fixed = rosenbrock_fixed.gradient(x, true).value();
+    xt::xarray<Scalar> grad_standard
+        = rosenbrock_standard.gradient(x, true).value();
 
     REQUIRE_THAT(
         grad_fixed(0), Catch::Matchers::WithinAbs(grad_standard(0), 1e-4));
@@ -63,8 +65,9 @@ TEST_CASE(
   }
 
   SECTION("Hessian with Fixed Degree of Freedom") {
-    xt::xarray<Scalar> hess_fixed    = rosenbrock_fixed.hessian(x, true).value();
-    xt::xarray<Scalar> hess_standard = rosenbrock_standard.hessian(x, true).value();
+    xt::xarray<Scalar> hess_fixed = rosenbrock_fixed.hessian(x, true).value();
+    xt::xarray<Scalar> hess_standard
+        = rosenbrock_standard.hessian(x, true).value();
 
     // Row and column corresponding to fixed DOF should be zero
     REQUIRE_THAT(hess_fixed(1, 0), Catch::Matchers::WithinAbs(0.0, 1e-4));

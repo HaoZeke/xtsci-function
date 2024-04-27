@@ -27,16 +27,16 @@ TEST_CASE("Branin Function properties", "[Branin]") {
   SECTION("Value at arbitrary points") {
     xt::xarray<Scalar> x = {-1.050, 0.466};
     REQUIRE_THAT(branin(x), Catch::Matchers::WithinAbs(68.7642657479, 1e-4));
-    REQUIRE_THAT(branin({1.623, 0.38}),
-                 Catch::Matchers::WithinAbs(20.9044685173, 1e-4));
-    REQUIRE_THAT(branin({0, 0}),
-                 Catch::Matchers::WithinAbs(55.6021126423, 1e-4));
-    REQUIRE_THAT(branin({1, 1}),
-                 Catch::Matchers::WithinAbs(27.7029055485, 1e-4));
-    REQUIRE_THAT(branin({2, 2}),
-                 Catch::Matchers::WithinAbs(7.78270464815, 1e-4));
-    REQUIRE_THAT(branin({-1, -1}),
-                 Catch::Matchers::WithinAbs(91.2392440552, 1e-4));
+    REQUIRE_THAT(
+        branin({1.623, 0.38}), Catch::Matchers::WithinAbs(20.9044685173, 1e-4));
+    REQUIRE_THAT(
+        branin({0, 0}), Catch::Matchers::WithinAbs(55.6021126423, 1e-4));
+    REQUIRE_THAT(
+        branin({1, 1}), Catch::Matchers::WithinAbs(27.7029055485, 1e-4));
+    REQUIRE_THAT(
+        branin({2, 2}), Catch::Matchers::WithinAbs(7.78270464815, 1e-4));
+    REQUIRE_THAT(
+        branin({-1, -1}), Catch::Matchers::WithinAbs(91.2392440552, 1e-4));
   }
 
   SECTION("Gradients at some points") {
@@ -59,7 +59,7 @@ TEST_CASE("Branin Function properties", "[Branin]") {
   }
 
   SECTION("Hessian at an arbitrary point") {
-    x = {0, 0};
+    x                       = {0, 0};
     xt::xarray<Scalar> hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
     // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-1.43562507629,
@@ -68,7 +68,7 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(3.18309879303, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2, 1e-4));
 
-    x = {1, 1};
+    x    = {1, 1};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
     // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(0.19472694397,
@@ -77,7 +77,7 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(2.6663607955, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2, 1e-4));
 
-    x = {2, 2};
+    x    = {2, 2};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
     // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.99546986818,
@@ -86,7 +86,7 @@ TEST_CASE("Branin Function properties", "[Branin]") {
     REQUIRE_THAT(hess(1, 0), Catch::Matchers::WithinAbs(2.14962278306, 1e-4));
     REQUIRE_THAT(hess(1, 1), Catch::Matchers::WithinAbs(2.0000000596, 1e-4));
 
-    x = {-1, -1};
+    x    = {-1, -1};
     hess = branin.hessian(x).value();
     // TODO(rgoswami): Fix
     // REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(6.16268634796,

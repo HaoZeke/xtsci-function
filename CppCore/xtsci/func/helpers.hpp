@@ -15,9 +15,9 @@ namespace xts {
 namespace func {
 namespace helpers {
 template <class E, class ScalarType = double>
-void ensure_normalized(E &&vector,
-                       bool is_normalized = false,
-                       ScalarType tol = static_cast<ScalarType>(1e-6)) {
+void ensure_normalized(
+    E &&vector, bool is_normalized = false,
+    ScalarType tol = static_cast<ScalarType>(1e-6)) {
   if (!is_normalized) {
     auto norm = xt::linalg::norm(vector, 2);
     if (std::abs(norm - static_cast<ScalarType>(1.0)) >= tol) {

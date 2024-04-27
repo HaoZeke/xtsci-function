@@ -26,7 +26,7 @@ xt::xarray<ScalarType> eval_on_grid2D(
   auto x_line = xt::linspace<ScalarType>(axOne[0], axOne[1], axOne[2]);
   auto y_line = xt::linspace<ScalarType>(axTwo[0], axTwo[1], axTwo[2]);
   auto [x_mesh, y_mesh] = xt::meshgrid(x_line, y_line);
-  auto vec = xt::vectorize(func);
+  auto vec              = xt::vectorize(func);
   return vec(x_mesh, y_mesh);
 }
 
@@ -39,8 +39,8 @@ void npz_on_grid2D(
   auto x_line = xt::linspace<ScalarType>(axOne[0], axOne[1], axOne[2]);
   auto y_line = xt::linspace<ScalarType>(axTwo[0], axTwo[1], axTwo[2]);
   auto [x_mesh, y_mesh] = xt::meshgrid(x_line, y_line);
-  auto vec = xt::vectorize(func);
-  auto z_val = vec(x_mesh, y_mesh);
+  auto vec              = xt::vectorize(func);
+  auto z_val            = vec(x_mesh, y_mesh);
   xt::dump_npz(filename, "z", z_val, true, true);
   xt::dump_npz(filename, "x", x_mesh, true, true);
   xt::dump_npz(filename, "y", y_mesh, true, true);

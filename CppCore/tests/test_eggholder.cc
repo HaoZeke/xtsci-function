@@ -33,12 +33,15 @@ TEST_CASE("Eggholder Function properties", "[Eggholder]") {
   // }
 
   SECTION("Value at arbitrary points") {
-    REQUIRE_THAT(eggholderFunc({1, 1}),
-                 Catch::Matchers::WithinAbs(-30.7614121992, 1e-4));
-    REQUIRE_THAT(eggholderFunc({0.5, 0.5}),
-                 Catch::Matchers::WithinAbs(-28.1381212887, 1e-4));
-    REQUIRE_THAT(eggholderFunc({0.623, 0.028}),
-                 Catch::Matchers::WithinAbs(-26.7590279212, 1e-4));
+    REQUIRE_THAT(
+        eggholderFunc({1, 1}),
+        Catch::Matchers::WithinAbs(-30.7614121992, 1e-4));
+    REQUIRE_THAT(
+        eggholderFunc({0.5, 0.5}),
+        Catch::Matchers::WithinAbs(-28.1381212887, 1e-4));
+    REQUIRE_THAT(
+        eggholderFunc({0.623, 0.028}),
+        Catch::Matchers::WithinAbs(-26.7590279212, 1e-4));
   }
 
   // TODO(rgoswami): Fix this

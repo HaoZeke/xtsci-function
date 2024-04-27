@@ -33,8 +33,8 @@ private:
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     ScalarType x_val = x(0);
     ScalarType y_val = x(1);
-    return (1 - x_val) * (1 - x_val) +
-           100 * (y_val - x_val * x_val) * (y_val - x_val * x_val);
+    return (1 - x_val) * (1 - x_val)
+           + 100 * (y_val - x_val * x_val) * (y_val - x_val * x_val);
   }
 
   std::optional<xt::xarray<ScalarType>>
@@ -54,10 +54,10 @@ private:
     ScalarType x_val = x(0);
     ScalarType y_val = x(1);
 
-    ScalarType d2f_dx2 = 2 - 400 * y_val + 1200 * x_val * x_val;
+    ScalarType d2f_dx2  = 2 - 400 * y_val + 1200 * x_val * x_val;
     ScalarType d2f_dxdy = -400 * x_val;
     ScalarType d2f_dydx = -400 * x_val;
-    ScalarType d2f_dy2 = 200;
+    ScalarType d2f_dy2  = 200;
 
     xt::xarray<ScalarType> hess = {{d2f_dx2, d2f_dxdy}, {d2f_dydx, d2f_dy2}};
 

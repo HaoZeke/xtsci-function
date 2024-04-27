@@ -29,14 +29,14 @@ TEST_CASE("Himmelblau Function properties", "[Himmelblau]") {
   }
 
   SECTION("Gradient at first minimum is zero vector") {
-    x = {3.0, 2.0};
+    x                       = {3.0, 2.0};
     xt::xarray<Scalar> grad = himmelblauFunc.gradient(x).value();
     REQUIRE_THAT(grad(0), Catch::Matchers::WithinAbs(0.0, 1e-4));
     REQUIRE_THAT(grad(1), Catch::Matchers::WithinAbs(0.0, 1e-4));
   }
 
   SECTION("Hessian at first minimum is positive definite") {
-    x = {3.0, 2.0};
+    x                       = {3.0, 2.0};
     xt::xarray<Scalar> hess = himmelblauFunc.hessian(x).value();
     // For a 2x2 matrix, it's positive definite if det > 0 and top left value >
     // 0
@@ -47,21 +47,22 @@ TEST_CASE("Himmelblau Function properties", "[Himmelblau]") {
 
   SECTION("Value at arbitrary points") {
     REQUIRE_THAT(himmelblauFunc({1, 1}), Catch::Matchers::WithinAbs(106, 1e-4));
-    REQUIRE_THAT(himmelblauFunc({0.5, 0.5}),
-                 Catch::Matchers::WithinAbs(144.125, 1e-4));
-    REQUIRE_THAT(himmelblauFunc({0.623, 0.028}),
-                 Catch::Matchers::WithinAbs(152.674455823, 1e-4));
+    REQUIRE_THAT(
+        himmelblauFunc({0.5, 0.5}), Catch::Matchers::WithinAbs(144.125, 1e-4));
+    REQUIRE_THAT(
+        himmelblauFunc({0.623, 0.028}),
+        Catch::Matchers::WithinAbs(152.674455823, 1e-4));
   }
 
   SECTION("Gradient at arbitrary point") {
-    x = {0.623, 0.028};
+    x                       = {0.623, 0.028};
     xt::xarray<Scalar> grad = himmelblauFunc.gradient(x).value();
     REQUIRE_THAT(grad(0), Catch::Matchers::WithinAbs(-39.1274386386, 1e-4));
     REQUIRE_THAT(grad(1), Catch::Matchers::WithinAbs(-21.8818528312, 1e-4));
   }
 
   SECTION("Hessian at an arbitrary point") {
-    x = {0.623, 0.028};
+    x                       = {0.623, 0.028};
     xt::xarray<Scalar> hess = himmelblauFunc.hessian(x).value();
     REQUIRE_THAT(hess(0, 0), Catch::Matchers::WithinAbs(-37.23044967651, 1e-4));
     REQUIRE_THAT(hess(0, 1), Catch::Matchers::WithinAbs(2.60399961472, 1e-4));

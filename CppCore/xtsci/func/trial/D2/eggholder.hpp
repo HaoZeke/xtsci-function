@@ -31,9 +31,9 @@ private:
   ScalarType compute(const xt::xarray<ScalarType> &x) const override {
     ScalarType x_val = x(0);
     ScalarType y_val = x(1);
-    return -(y_val + 47) *
-               std::sin(std::sqrt(std::abs(x_val / 2 + (y_val + 47)))) -
-           x_val * std::sin(std::sqrt(std::abs(x_val - (y_val + 47))));
+    return -(y_val + 47)
+               * std::sin(std::sqrt(std::abs(x_val / 2 + (y_val + 47))))
+           - x_val * std::sin(std::sqrt(std::abs(x_val - (y_val + 47))));
   }
 };
 
