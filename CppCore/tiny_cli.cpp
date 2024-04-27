@@ -120,83 +120,41 @@ int main(int argc, char *argv[]) {
   //     {7.64080177576300, 9.94703114803832, 7.83556986121272}, // H
   // };
 
-  std::vector<std::string> fconts =
-      yodecon::helpers::file::read_con_file("cuh2.con");
-
+  auto objFunc = xts::pot::mk_xtpot_con("cuh2.con", cuh2pot);
+  std::vector<std::string> fconts
+      = yodecon::helpers::file::read_con_file("cuh2.con");
   auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
+  auto [positions, atomTypes, boxMatrix, booltypes]
+      = xts::pot::extract_condat("cuh2.con");
+  // // fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
+  fmt::print("\nFree {}\n", fmt::streamed(objFunc.get_free(positions)));
 
-  auto positions      = yodecon::types::adapt::xts::extract_positions(frame);
-  auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
-  xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
-  for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
-    atomTypes(i) = atomNumbersVec[i];
-  }
-  // std::array<size_t, 2> shape = {1, 3};
-  xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1, 3}));
-  for (size_t i = 0; i < 3; ++i) {
-    boxMatrix(0, i) = frame.boxl[i];
-  }
-  xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
-
-  fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
-  xts::pot::XTPot<double> objFunc(cuh2pot, positions, atomTypes, boxMatrix,
-                                  booltypes);
-  xt::xarray<double> test_x{0, 3, 4, 3, 2, 1};
-  fmt::print("\nPutting in {}\n", fmt::streamed(test_x));
-
-  // fmt::print("Reconstructed {}",
-  //            fmt::streamed(objFunc.reconstruct_full(test_x)));
-    // xt::xarray<double> data = {{1.0, 2.0, 3.0},
-    //                            {4.0, 5.0, 6.0},
-    //                            {1.0, 2.0, 8.0}};
-    // xt::xarray<bool> mask = {{true, true, true},
-    //                          {false, false, false},
-    //                          {false, false, false}};
-
-    // // Updates for free positions
-    // xt::xarray<double> free_updates = {{0.1, 0.0, 0.2},
-    //                                    {5, 3, 2}};
-
-    // // Flatten data and mask
-    // auto flat_data = xt::flatten(data);
-    // auto flat_mask = xt::flatten(mask);
-
-    // // Get the indices where mask is false
-    // auto indices = xt::from_indices(xt::nonzero(xt::equal(flat_mask, false)));
-
-    // // Apply updates using indices
-    // xt::index_view(flat_data, indices) = xt::flatten(free_updates);
-
-    // std::cout << "Updated data:" << std::endl;
-    // std::cout << data << std::endl;
-
-  // double energy = objFunc(positions);
-  // auto grad = objFunc.gradient(positions);
+  double energy = objFunc(objFunc.get_free(positions));
+  auto grad     = objFunc.gradient(objFunc.get_free(positions));
   // // Reference:
-  // // Got energy -2.7114093289369636
-  // //  Forces:
-  // //      1.49194 -0.000392731  0.000182606
-  // //     -1.49194  0.000392731 -0.000182606
-  // //     -4.91186 -1.39442e-05    4.799e-06
-  // //      4.91186  1.39442e-05   -4.799e-06%
-  // auto [hdist, cusdist] =
-  //     rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
-  // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
+  // // ❯ eonclient -s "cuh2.con" -p cuh2
+  // // Energy:         -697.3134512906
+  // // (free) Forces:
+  // //  0.00258381 2.71051e-20 0.000809943
+  // // -0.00258381 1.69407e-20 0.000809943
 
-  // // auto new_positions =
-  // rgpot::cuh2::utils::xts::perturb_positions(positions,
-  // // atomTypes, cusdist, hdist); fmt::print("New positions:\n{}\n",
-  // // fmt::streamed(new_positions)); fmt::print("Old positions:\n{}\n",
-  // // fmt::streamed(positions));
+  auto [hdist, cusdist]
+      = rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
+  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
 
-  // fmt::print("Got energy {}\n", energy);
-  // fmt::print("Got gradient {}\n", fmt::streamed(*grad));
-  // // double new_energy =
-  // //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
-  // // auto new_grad =
-  // // objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
-  // // fmt::print("Got new energy {}\n", new_energy);
-  // // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
+  auto new_positions = rgpot::cuh2::utils::xts::perturb_positions(
+      positions, atomTypes, cusdist, hdist + 10);
+  // fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
+  // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
+
+  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  fmt::print("Got energy {}\n", energy);
+  double new_energy = objFunc(
+      objFunc.get_free(xt::ravel<xt::layout_type::row_major>(new_positions)));
+  auto new_grad = objFunc.gradient(
+      objFunc.get_free(xt::ravel<xt::layout_type::row_major>(new_positions)));
+  fmt::print("Got new energy {}\n", new_energy);
+  fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
 
   // // auto energyFunc = [&objFunc, &positions, &atomTypes](
   // //                       double hh_dist, double cu_slab_dist) -> double {

@@ -7,6 +7,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -16,6 +17,11 @@
 #include "xtsci/func/base.hpp"
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xindex_view.hpp>
+
+// TODO(rg): Gate this later
+#include "readCon/include/BaseTypes.hpp"
+#include "readCon/include/ReadCon.hpp"
+#include "readCon/include/adapters/xtensor.hpp"
 
 namespace xts {
 namespace pot {
@@ -106,6 +112,44 @@ private:
     return expandedMask;
   }
 };
+
+// TODO(rg): Really shouldn't live here
+// TODO(rg): TEST
+// Returns a bunch of relevant things
+// positions, atomTypes, boxMatrix, typeIsFixed
+template <typename ScalarType = double>
+inline std::tuple<
+    xt::xtensor<ScalarType, 2>, xt::xtensor<int, 1>, xt::xtensor<ScalarType, 2>,
+    xt::xtensor<bool, 1>>
+extract_condat(const std::string &con_fname) {
+  std::vector<std::string> fconts
+      = yodecon::helpers::file::read_con_file(con_fname);
+  auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
+  auto positions      = yodecon::types::adapt::xts::extract_positions(frame);
+  auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
+  xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
+  for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
+    atomTypes(i) = atomNumbersVec[i];
+  }
+  xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1, 3}));
+  for (size_t i = 0; i < 3; ++i) {
+    boxMatrix(0, i) = frame.boxl[i];
+  }
+  xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
+  return std::make_tuple(positions, atomTypes, boxMatrix, booltypes);
+}
+
+// TODO(rg): Path sanity and stuff
+// TODO(rg): TEST
+// Also move to a util and gate on having readcon
+template <typename ScalarType = double>
+inline XTPot<ScalarType> mk_xtpot_con(
+    const std::string &con_fname, std::shared_ptr<rgpot::Potential> pot) {
+  auto [positions, atomTypes, boxMatrix, booltypes] = extract_condat(con_fname);
+  xts::pot::XTPot<double> objFunc(
+      std::move(pot), positions, atomTypes, boxMatrix, booltypes);
+  return objFunc;
+}
 
 } // namespace pot
 } // namespace xts
