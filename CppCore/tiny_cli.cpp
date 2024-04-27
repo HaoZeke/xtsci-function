@@ -27,9 +27,8 @@
 #include "xtsci/pot/base.hpp"
 
 #include "readCon/include/BaseTypes.hpp"
-#include "readCon/include/FormatConstants.hpp"
 #include "readCon/include/ReadCon.hpp"
-#include "readCon/include/helpers/StringHelpers.hpp"
+#include "readCon/include/adapters/xtensor.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
@@ -101,8 +100,8 @@ int main(int argc, char *argv[]) {
 
   fmt::print(
       "Branin function at 1, 1 is {} and gradient is {} with mask ({} {})",
-      branin_fixed(x), *branin_fixed.gradient(x), branin_fixed.m_isFixed[0],
-      branin_fixed.m_isFixed[1]);
+      branin_fixed(x), *branin_fixed.gradient(x, true),
+      branin_fixed.m_isFixed[0], branin_fixed.m_isFixed[1]);
 
   auto cuh2pot = std::make_shared<rgpot::CuH2Pot>();
   // xt::xtensor<int, 1> atomTypes{{29, 29, 1, 1}};
@@ -119,66 +118,56 @@ int main(int argc, char *argv[]) {
   //     {7.64080177576300, 9.94703114803832, 7.83556986121272}, // H
   // };
 
-  std::vector<std::string> fconts =
-      yodecon::helpers::file::read_con_file("cuh2.con");
+  // auto objFunc = xts::pot::mk_xtpot_con("cuh2.con", cuh2pot);
+  // std::vector<std::string> fconts
+  //     = yodecon::helpers::file::read_con_file("cuh2.con");
+  // auto frame =
+  // yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts); auto
+  // [positions, atomTypes, boxMatrix, booltypes]
+  //     = xts::pot::extract_condat("cuh2.con");
+  // // // fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
+  // fmt::print("\nFree {}\n", fmt::streamed(objFunc.get_free(positions)));
 
-  auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
+  // double energy = objFunc(objFunc.get_free(positions));
+  // auto grad     = objFunc.gradient(objFunc.get_free(positions));
+  // // Reference:
+  // // ❯ eonclient -s "cuh2.con" -p cuh2
+  // // Energy:         -697.3134512906
+  // // (free) Forces:
+  // //  0.00258381 2.71051e-20 0.000809943
+  // // -0.00258381 1.69407e-20 0.000809943
 
-  auto positions = rgpot::cuh2::utils::xts::extract_positions(frame);
-  auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
-  xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
-  for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
-    atomTypes(i) = atomNumbersVec[i];
-  }
-  // std::array<size_t, 2> shape = {1, 3};
-  xt::xtensor<double, 2> boxMatrix = xt::empty<double>(xt::shape({1, 3}));
-  for (size_t i = 0; i < 3; ++i) {
-    boxMatrix(0, i) = frame.boxl[i];
-  }
-  xt::xtensor<bool, 1> booltypes = xt::adapt(frame.is_fixed);
+  // auto [hdist, cusdist]
+  //     = rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
+  // fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
 
-  fmt::print("\nPutting in {}\n", fmt::streamed(booltypes));
-  xts::pot::XTPot<double> objFunc(cuh2pot, atomTypes, boxMatrix, booltypes);
+  // auto new_positions = rgpot::cuh2::utils::xts::perturb_positions(
+  //     positions, atomTypes, cusdist, hdist + 10);
+  // // fmt::print("New positions:\n{}\n", fmt::streamed(new_positions));
+  // // fmt::print("Old positions:\n{}\n", fmt::streamed(positions));
 
-  double energy = objFunc(positions);
-  auto grad = objFunc.gradient(positions);
-  // Reference:
-  // Got energy -2.7114093289369636
-  //  Forces:
-  //      1.49194 -0.000392731  0.000182606
-  //     -1.49194  0.000392731 -0.000182606
-  //     -4.91186 -1.39442e-05    4.799e-06
-  //      4.91186  1.39442e-05   -4.799e-06%
-  auto [hdist, cusdist] = rgpot::cuh2::utils::xts::calculateDistances(positions, atomTypes);
-  fmt::print("HH distance {}\n CuSlab distance {}\n", hdist, cusdist);
-
-  // auto new_positions = rgpot::cuh2::utils::xts::perturb_positions(positions,
-  // atomTypes, cusdist, hdist); fmt::print("New positions:\n{}\n",
-  // fmt::streamed(new_positions)); fmt::print("Old positions:\n{}\n",
-  // fmt::streamed(positions));
-
-  fmt::print("Got energy {}\n", energy);
-  fmt::print("Got gradient {}\n", fmt::streamed(*grad));
-  // double new_energy =
-  //     objFunc(xt::ravel<xt::layout_type::row_major>(new_positions));
-  // auto new_grad =
-  //     objFunc.gradient(xt::ravel<xt::layout_type::row_major>(new_positions));
+  // fmt::print("Got gradient {}\n", fmt::streamed(*grad));
+  // fmt::print("Got energy {}\n", energy);
+  // double new_energy = objFunc(
+  //     objFunc.get_free(xt::ravel<xt::layout_type::row_major>(new_positions)));
+  // auto new_grad = objFunc.gradient(
+  //     objFunc.get_free(xt::ravel<xt::layout_type::row_major>(new_positions)));
   // fmt::print("Got new energy {}\n", new_energy);
   // fmt::print("Got gradient {}\n", fmt::streamed(*new_grad));
 
-  // auto energyFunc = [&objFunc, &positions, &atomTypes](
-  //                       double hh_dist, double cu_slab_dist) -> double {
-  //   auto perturbed_positions =
-  //       rgpot::cuh2::utils::xts::perturb_positions(positions, atomTypes,
-  //       cu_slab_dist, hh_dist);
-  //   return
-  //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
-  //          (-697.311695);
-  // };
+  // // auto energyFunc = [&objFunc, &positions, &atomTypes](
+  // //                       double hh_dist, double cu_slab_dist) -> double {
+  // //   auto perturbed_positions =
+  // //       rgpot::cuh2::utils::xts::perturb_positions(positions, atomTypes,
+  // //       cu_slab_dist, hh_dist);
+  // //   return
+  // //   objFunc(xt::ravel<xt::layout_type::row_major>(perturbed_positions)) -
+  // //          (-697.311695);
+  // // };
 
-  // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
-  // energyFunc,
-  //                                  "cuh2_grid.npz");
+  // // xts::func::npz_on_grid2D<double>({0.4, 3.2, 60}, {-0.05, 3.1, 60},
+  // // energyFunc,
+  // //                                  "cuh2_grid.npz");
 
   return EXIT_SUCCESS;
 }

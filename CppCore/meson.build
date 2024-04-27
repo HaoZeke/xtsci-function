@@ -22,6 +22,8 @@ if get_option('with_tests')
       ['test_eggholder', 'test_eggholder.cc', ''],
       ['test_branin', 'test_branin.cc', ''],
       ['test_fixed', 'test_fixed.cc', ''],
+      ['test_xtpot', 'test_xtpot.cc', ''],
+      ['test_cuh2', 'test_cuh2.cc', '/CppCore/tests/data'],
       # ['test_cache', 'test_cache.cc', ''],
     ]
     foreach test : test_array

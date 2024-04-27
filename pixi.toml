@@ -11,6 +11,7 @@ readme = "readme.org"
 repository = "https://github.com/HaoZeke/xtsci-function"
 
 [tasks]
+lint = {cmd = "pre-commit run --all-files"}
 
 [dependencies]
 python = "3.10.*"
