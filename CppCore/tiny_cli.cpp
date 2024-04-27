@@ -30,6 +30,7 @@
 #include "readCon/include/FormatConstants.hpp"
 #include "readCon/include/ReadCon.hpp"
 #include "readCon/include/helpers/StringHelpers.hpp"
+#include "readCon/include/adapters/xtensor.hpp"
 
 int main(int argc, char *argv[]) {
   // Eat warnings, also safer
@@ -124,7 +125,7 @@ int main(int argc, char *argv[]) {
 
   auto frame = yodecon::create_single_con<yodecon::types::ConFrameVec>(fconts);
 
-  auto positions = rgpot::cuh2::utils::xts::extract_positions(frame);
+  auto positions      = yodecon::types::adapt::xts::extract_positions(frame);
   auto atomNumbersVec = yodecon::symbols_to_atomic_numbers(frame.symbol);
   xt::xtensor<int, 1> atomTypes = xt::empty<int>({atomNumbersVec.size()});
   for (size_t i = 0; i < atomNumbersVec.size(); ++i) {
